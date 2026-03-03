@@ -137,6 +137,19 @@ ALTER TABLE public.registrations ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.payment_proofs ENABLE ROW LEVEL SECURITY;
 
 -- ---- PROFILES POLICIES ----
+
+-- Create a security definer function to avoid infinite recursion on role checks
+CREATE OR REPLACE FUNCTION public.is_admin()
+RETURNS boolean
+LANGUAGE sql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+  SELECT EXISTS (
+    SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'admin'
+  );
+$$;
+
 CREATE POLICY "Users can read own profile"
   ON public.profiles FOR SELECT
   USING (auth.uid() = id);
@@ -148,11 +161,11 @@ CREATE POLICY "Users can update own profile"
 
 CREATE POLICY "Admins can read all profiles"
   ON public.profiles FOR SELECT
-  USING (EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role = 'admin'));
+  USING (public.is_admin());
 
 CREATE POLICY "Admins can update all profiles"
   ON public.profiles FOR UPDATE
-  USING (EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role = 'admin'));
+  USING (public.is_admin());
 
 -- ---- REGISTRATIONS POLICIES ----
 CREATE POLICY "Users can read own registration"
@@ -161,11 +174,11 @@ CREATE POLICY "Users can read own registration"
 
 CREATE POLICY "Admins can read all registrations"
   ON public.registrations FOR SELECT
-  USING (EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role = 'admin'));
+  USING (public.is_admin());
 
 CREATE POLICY "Admins can update registrations"
   ON public.registrations FOR UPDATE
-  USING (EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role = 'admin'));
+  USING (public.is_admin());
 
 -- ---- PAYMENT PROOFS POLICIES ----
 CREATE POLICY "Users can read own payment proofs"
@@ -178,7 +191,7 @@ CREATE POLICY "Users can insert own payment proofs"
 
 CREATE POLICY "Admins can read all payment proofs"
   ON public.payment_proofs FOR SELECT
-  USING (EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role = 'admin'));
+  USING (public.is_admin());
 
 
 -- =================================================================

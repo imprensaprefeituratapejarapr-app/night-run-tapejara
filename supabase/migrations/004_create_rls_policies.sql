@@ -8,6 +8,18 @@
 -- RLS POLICIES FOR profiles
 -- =============================================
 
+-- Create a security definer function to avoid infinite recursion on role checks
+CREATE OR REPLACE FUNCTION public.is_admin()
+RETURNS boolean
+LANGUAGE sql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+  SELECT EXISTS (
+    SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'admin'
+  );
+$$;
+
 -- Athletes can read their own profile
 CREATE POLICY "Users can read own profile"
   ON public.profiles FOR SELECT
@@ -22,22 +34,12 @@ CREATE POLICY "Users can update own profile"
 -- Admins can read all profiles
 CREATE POLICY "Admins can read all profiles"
   ON public.profiles FOR SELECT
-  USING (
-    EXISTS (
-      SELECT 1 FROM public.profiles
-      WHERE id = auth.uid() AND role = 'admin'
-    )
-  );
+  USING (public.is_admin());
 
 -- Admins can update all profiles
 CREATE POLICY "Admins can update all profiles"
   ON public.profiles FOR UPDATE
-  USING (
-    EXISTS (
-      SELECT 1 FROM public.profiles
-      WHERE id = auth.uid() AND role = 'admin'
-    )
-  );
+  USING (public.is_admin());
 
 -- =============================================
 -- RLS POLICIES FOR registrations
@@ -51,22 +53,12 @@ CREATE POLICY "Users can read own registration"
 -- Admins can read all registrations
 CREATE POLICY "Admins can read all registrations"
   ON public.registrations FOR SELECT
-  USING (
-    EXISTS (
-      SELECT 1 FROM public.profiles
-      WHERE id = auth.uid() AND role = 'admin'
-    )
-  );
+  USING (public.is_admin());
 
 -- Admins can update all registrations
 CREATE POLICY "Admins can update registrations"
   ON public.registrations FOR UPDATE
-  USING (
-    EXISTS (
-      SELECT 1 FROM public.profiles
-      WHERE id = auth.uid() AND role = 'admin'
-    )
-  );
+  USING (public.is_admin());
 
 -- =============================================
 -- RLS POLICIES FOR payment_proofs
@@ -85,9 +77,4 @@ CREATE POLICY "Users can insert own payment proofs"
 -- Admins can read all proofs
 CREATE POLICY "Admins can read all payment proofs"
   ON public.payment_proofs FOR SELECT
-  USING (
-    EXISTS (
-      SELECT 1 FROM public.profiles
-      WHERE id = auth.uid() AND role = 'admin'
-    )
-  );
+  USING (public.is_admin());

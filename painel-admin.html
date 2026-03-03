@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html class="dark" lang="pt-br">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Painel Admin — 2ª Night Run Tapejara</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+    <style type="text/tailwindcss">
+        @layer base { body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; } }
+        :root { --primary: #12c172; --bg-top: #070c12; --bg-bottom: #0b1c3a; }
+        .neon-glow { text-shadow: 0 0 15px rgba(18,193,114,0.4), 0 0 30px rgba(18,193,114,0.2); }
+        .btn-neon-glow { box-shadow: 0 4px 20px rgba(18,193,114,0.25); }
+        .btn-neon-glow:hover { box-shadow: 0 8px 30px rgba(18,193,114,0.4); }
+        .starry-bg {
+            background: linear-gradient(to bottom, var(--bg-top), #070c12 40%, var(--bg-bottom));
+            position: fixed; inset: 0; overflow: hidden; z-index: 0;
+        }
+        .starry-bg::before {
+            content: ""; position: absolute; inset: 0; background-repeat: repeat; pointer-events: none;
+            background-image: radial-gradient(1.5px 1.5px at 20% 30%, rgba(255,255,255,0.9), transparent), radial-gradient(1px 1px at 10% 70%, rgba(255,255,255,0.6), transparent), radial-gradient(2px 2px at 40% 40%, rgba(255,255,255,0.8), transparent);
+            background-size: 250px 250px; animation: twinkle 4s ease-in-out infinite alternate;
+        }
+        @keyframes twinkle { 0% { opacity: 0.3; } 100% { opacity: 1; } }
+        .card { @apply bg-[#0a1628]/80 backdrop-blur-xl rounded-3xl border border-white/5 p-6 md:p-8 shadow-2xl; }
+        .kpi-card { @apply bg-[#0a1628]/80 backdrop-blur-xl rounded-2xl border border-white/5 p-5 shadow-xl; }
+        .input-field { @apply w-full bg-white/5 border border-white/10 text-white rounded-xl px-4 py-3 text-sm placeholder:text-slate-500 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/30 transition-all; }
+        select.input-field { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2394a3b8' d='M6 8L1 3h10z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 1rem center; }
+        select.input-field option { background: #0b1c3a; color: white; }
+        table { border-collapse: separate; border-spacing: 0; }
+        th { @apply text-[10px] font-bold text-slate-500 uppercase tracking-wider text-left px-4 py-3 bg-white/[0.02]; }
+        td { @apply text-sm text-slate-300 px-4 py-4 border-t border-white/5; }
+        tr:hover td { @apply bg-white/[0.02]; }
+    </style>
+    <script>
+        tailwind.config = { darkMode: "class", theme: { extend: { colors: { "primary": "#12c172", "background-dark": "#070c12", "surface-dark": "#0b1c3a" } } } }
+    </script>
+</head>
+
+<body class="bg-background-dark text-slate-100 antialiased selection:bg-primary/30 selection:text-white">
+    <div class="starry-bg"></div>
+
+    <!-- Header -->
+    <header
+        class="fixed top-0 w-full z-50 border-b border-white/5 bg-background-dark/60 backdrop-blur-xl px-6 md:px-20 py-4">
+        <div class="max-w-[1400px] mx-auto flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <a href="home.html" class="flex items-center gap-3 hover:opacity-80 transition-opacity">
+                    <span class="material-symbols-outlined text-primary text-3xl">sports_score</span>
+                    <h2 class="text-xl font-bold tracking-tight">2ªNIGHT<span class="text-primary">RUN</span></h2>
+                </a>
+                <span
+                    class="hidden sm:inline-flex px-3 py-1 rounded-full bg-red-500/10 border border-red-500/20 text-red-400 text-[10px] font-bold uppercase tracking-wider">Admin</span>
+            </div>
+            <div class="flex items-center gap-4">
+                <span id="admin-name" class="hidden sm:block text-sm text-slate-300 font-medium"></span>
+                <button onclick="logout()"
+                    class="flex items-center gap-2 px-4 py-2 rounded-full text-slate-400 text-sm font-medium hover:bg-white/5 transition-all">
+                    <span class="material-symbols-outlined text-lg">logout</span>
+                    <span class="hidden sm:inline">Sair</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Loading -->
+    <div id="loading" class="relative z-10 min-h-screen flex items-center justify-center">
+        <div class="flex flex-col items-center gap-4">
+            <span class="material-symbols-outlined text-primary text-4xl animate-spin">progress_activity</span>
+            <p class="text-slate-400 text-sm">Carregando painel administrativo...</p>
+        </div>
+    </div>
+
+    <!-- Main -->
+    <main id="main-content" class="hidden relative z-10 pt-24 pb-16 px-4 md:px-6">
+        <div class="max-w-[1400px] mx-auto flex flex-col gap-6">
+
+            <!-- Title -->
+            <div>
+                <h1 class="text-2xl md:text-3xl font-extrabold text-white tracking-tight">Painel Administrativo</h1>
+                <p class="text-slate-400 text-sm mt-1">Gerencie inscrições da 2ª Night Run Tapejara</p>
+            </div>
+
+            <!-- KPIs -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div class="kpi-card">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
+                            <span class="material-symbols-outlined text-primary">group</span>
+                        </div>
+                    </div>
+                    <p id="kpi-total" class="text-3xl font-extrabold text-white">0</p>
+                    <p class="text-xs text-slate-500 font-bold uppercase tracking-wider mt-1">Total Inscritos</p>
+                </div>
+                <div class="kpi-card">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center">
+                            <span class="material-symbols-outlined text-emerald-400">check_circle</span>
+                        </div>
+                    </div>
+                    <p id="kpi-confirmed" class="text-3xl font-extrabold text-emerald-400">0</p>
+                    <p class="text-xs text-slate-500 font-bold uppercase tracking-wider mt-1">Confirmados</p>
+                </div>
+                <div class="kpi-card">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="w-10 h-10 rounded-xl bg-yellow-500/10 flex items-center justify-center">
+                            <span class="material-symbols-outlined text-yellow-400">hourglass_top</span>
+                        </div>
+                    </div>
+                    <p id="kpi-pending" class="text-3xl font-extrabold text-yellow-400">0</p>
+                    <p class="text-xs text-slate-500 font-bold uppercase tracking-wider mt-1">Pendentes</p>
+                </div>
+                <div class="kpi-card">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
+                            <span class="material-symbols-outlined text-primary">payments</span>
+                        </div>
+                    </div>
+                    <p id="kpi-revenue" class="text-3xl font-extrabold text-primary">R$ 0</p>
+                    <p class="text-xs text-slate-500 font-bold uppercase tracking-wider mt-1">Arrecadado</p>
+                </div>
+            </div>
+
+            <!-- Filters + Table -->
+            <div class="card !p-0 overflow-hidden">
+                <!-- Filters Bar -->
+                <div class="p-6 border-b border-white/5 flex flex-col md:flex-row gap-4">
+                    <div class="flex-1 relative">
+                        <span
+                            class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 text-lg">search</span>
+                        <input type="text" id="search-input" placeholder="Buscar por nome, CPF, cidade..."
+                            class="input-field !pl-11" oninput="filterTable()" />
+                    </div>
+                    <select id="filter-status" class="input-field !w-auto min-w-[180px]" onchange="filterTable()">
+                        <option value="">Todos os Status</option>
+                        <option value="pending_payment">Pagamento Pendente</option>
+                        <option value="awaiting_approval">Aguardando Aprovação</option>
+                        <option value="confirmed">Confirmado</option>
+                        <option value="rejected">Rejeitado</option>
+                    </select>
+                    <button onclick="exportCSV()"
+                        class="flex items-center gap-2 px-5 py-3 rounded-xl border border-white/10 bg-white/5 text-white font-semibold text-sm hover:bg-white/10 transition-all shrink-0">
+                        <span class="material-symbols-outlined text-lg">download</span>
+                        Exportar CSV
+                    </button>
+                </div>
+
+                <!-- Table -->
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead>
+                            <tr>
+                                <th>Nº</th>
+                                <th>Nome</th>
+                                <th>CPF</th>
+                                <th>Idade</th>
+                                <th>Cidade</th>
+                                <th>Camiseta</th>
+                                <th>Status</th>
+                                <th>Comprovante</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="athletes-tbody"></tbody>
+                    </table>
+                </div>
+
+                <!-- Empty state -->
+                <div id="empty-state" class="hidden flex flex-col items-center justify-center py-16 text-center">
+                    <span class="material-symbols-outlined text-slate-600 text-5xl mb-3">person_search</span>
+                    <p class="text-slate-500 font-medium">Nenhum atleta encontrado</p>
+                    <p class="text-slate-600 text-sm">Tente ajustar os filtros de busca</p>
+                </div>
+
+                <!-- Pagination -->
+                <div class="p-4 border-t border-white/5 flex items-center justify-between text-sm text-slate-400">
+                    <span id="result-count">0 resultados</span>
+                    <div class="flex gap-2">
+                        <button id="prev-btn" onclick="changePage(-1)" disabled
+                            class="px-3 py-1.5 rounded-lg border border-white/10 bg-white/5 hover:bg-white/10 disabled:opacity-30 disabled:cursor-not-allowed transition-all">Anterior</button>
+                        <button id="next-btn" onclick="changePage(1)" disabled
+                            class="px-3 py-1.5 rounded-lg border border-white/10 bg-white/5 hover:bg-white/10 disabled:opacity-30 disabled:cursor-not-allowed transition-all">Próximo</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Modal: View Proof -->
+    <div id="proof-modal" class="hidden fixed inset-0 z-[100] flex items-center justify-center p-4">
+        <div class="absolute inset-0 bg-black/70 backdrop-blur-sm" onclick="closeProofModal()"></div>
+        <div
+            class="relative bg-[#0a1628] rounded-3xl border border-white/10 p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl">
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="text-lg font-bold text-white">Comprovante de Pagamento</h3>
+                <button onclick="closeProofModal()" class="text-slate-400 hover:text-white transition-colors">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+            <div id="proof-modal-content" class="flex flex-col gap-4"></div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase-config.js"></script>
+    <script>
+        let allData = [];
+        let filteredData = [];
+        let currentPage = 0;
+        const PAGE_SIZE = 20;
+
+        // ============== INIT ==============
+        (async () => {
+            const result = await requireAdmin();
+            if (!result) return;
+
+            document.getElementById('admin-name').textContent = result.profile.full_name;
+
+            await loadAllData();
+            renderKPIs();
+            filterTable();
+
+            document.getElementById('loading').classList.add('hidden');
+            document.getElementById('main-content').classList.remove('hidden');
+        })();
+
+        // ============== LOAD DATA ==============
+        async function loadAllData() {
+            // Fetch all registrations with profile data
+            const { data, error } = await supabaseClient
+                .from('registrations')
+                .select(`
+                    *,
+                    profiles:user_id (
+                        full_name, email, phone, cpf, birth_date, city, state, shirt_size
+                    ),
+                    payment_proofs (
+                        id, file_url, file_name, file_type, uploaded_at
+                    )
+                `)
+                .order('registration_number', { ascending: true });
+
+            if (error) { console.error(error); showToast('Erro ao carregar dados.', 'error'); return; }
+            allData = data || [];
+        }
+
+        // ============== KPIs ==============
+        function renderKPIs() {
+            const total = allData.length;
+            const confirmed = allData.filter(r => r.status === 'confirmed').length;
+            const pending = allData.filter(r => ['pending_payment', 'awaiting_approval'].includes(r.status)).length;
+            const revenue = allData.filter(r => r.status === 'confirmed').reduce((sum, r) => sum + parseFloat(r.amount || 0), 0);
+
+            animateCounter('kpi-total', total);
+            animateCounter('kpi-confirmed', confirmed);
+            animateCounter('kpi-pending', pending);
+            document.getElementById('kpi-revenue').textContent = formatCurrency(revenue);
+        }
+
+        function animateCounter(id, target) {
+            const el = document.getElementById(id);
+            let current = 0;
+            const step = Math.max(1, Math.floor(target / 30));
+            const interval = setInterval(() => {
+                current = Math.min(current + step, target);
+                el.textContent = current;
+                if (current >= target) clearInterval(interval);
+            }, 30);
+        }
+
+        // ============== FILTER & RENDER TABLE ==============
+        function filterTable() {
+            const search = document.getElementById('search-input').value.toLowerCase().trim();
+            const statusFilter = document.getElementById('filter-status').value;
+
+            filteredData = allData.filter(r => {
+                const profile = r.profiles;
+                if (!profile) return false;
+
+                // Status filter
+                if (statusFilter && r.status !== statusFilter) return false;
+
+                // Search filter
+                if (search) {
+                    const searchable = [
+                        profile.full_name,
+                        profile.cpf,
+                        profile.city,
+                        profile.email,
+                        profile.phone,
+                        String(r.registration_number)
+                    ].filter(Boolean).join(' ').toLowerCase();
+                    if (!searchable.includes(search)) return false;
+                }
+
+                return true;
+            });
+
+            currentPage = 0;
+            renderTable();
+        }
+
+        function renderTable() {
+            const tbody = document.getElementById('athletes-tbody');
+            const start = currentPage * PAGE_SIZE;
+            const pageData = filteredData.slice(start, start + PAGE_SIZE);
+
+            document.getElementById('result-count').textContent = `${filteredData.length} resultado${filteredData.length !== 1 ? 's' : ''}`;
+            document.getElementById('prev-btn').disabled = currentPage === 0;
+            document.getElementById('next-btn').disabled = start + PAGE_SIZE >= filteredData.length;
+            document.getElementById('empty-state').classList.toggle('hidden', pageData.length > 0);
+
+            if (pageData.length === 0) { tbody.innerHTML = ''; return; }
+
+            tbody.innerHTML = pageData.map(r => {
+                const p = r.profiles;
+                const statusInfo = getStatusInfo(r.status);
+                const age = calculateAge(p.birth_date);
+                const cpfFormatted = p.cpf ? p.cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4') : '—';
+                const hasProofs = r.payment_proofs && r.payment_proofs.length > 0;
+
+                return `<tr>
+                    <td class="font-bold text-white">#${String(r.registration_number).padStart(4, '0')}</td>
+                    <td>
+                        <div>
+                            <p class="text-white font-medium">${p.full_name}</p>
+                            <p class="text-slate-500 text-xs">${p.email || ''}</p>
+                        </div>
+                    </td>
+                    <td class="font-mono text-xs">${cpfFormatted}</td>
+                    <td>${age}</td>
+                    <td>${p.city || '—'}/${p.state || '—'}</td>
+                    <td class="font-bold">${p.shirt_size || '—'}</td>
+                    <td>
+                        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border text-xs font-bold ${statusInfo.color}">
+                            <span class="material-symbols-outlined text-sm">${statusInfo.icon}</span>
+                            ${statusInfo.label}
+                        </span>
+                    </td>
+                    <td>
+                        ${hasProofs ? `<button onclick="showProofs('${r.id}')" class="text-primary hover:underline text-xs font-medium flex items-center gap-1">
+                            <span class="material-symbols-outlined text-sm">visibility</span>
+                            Ver (${r.payment_proofs.length})
+                        </button>` : '<span class="text-slate-600 text-xs">Nenhum</span>'}
+                    </td>
+                    <td>
+                        <div class="flex gap-2">
+                            ${r.status === 'awaiting_approval' ? `
+                                <button onclick="updateStatus('${r.id}', 'confirmed')" title="Aprovar"
+                                    class="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center text-emerald-400 hover:bg-emerald-500/20 transition-all">
+                                    <span class="material-symbols-outlined text-lg">check</span>
+                                </button>
+                                <button onclick="updateStatus('${r.id}', 'rejected')" title="Rejeitar"
+                                    class="w-8 h-8 rounded-lg bg-red-500/10 flex items-center justify-center text-red-400 hover:bg-red-500/20 transition-all">
+                                    <span class="material-symbols-outlined text-lg">close</span>
+                                </button>
+                            ` : ''}
+                            ${r.status === 'pending_payment' ? `
+                                <button onclick="updateStatus('${r.id}', 'confirmed')" title="Confirmar Manualmente"
+                                    class="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center text-emerald-400 hover:bg-emerald-500/20 transition-all">
+                                    <span class="material-symbols-outlined text-lg">check</span>
+                                </button>
+                            ` : ''}
+                            ${r.status === 'rejected' ? `
+                                <button onclick="updateStatus('${r.id}', 'pending_payment')" title="Reabrir"
+                                    class="w-8 h-8 rounded-lg bg-yellow-500/10 flex items-center justify-center text-yellow-400 hover:bg-yellow-500/20 transition-all">
+                                    <span class="material-symbols-outlined text-lg">refresh</span>
+                                </button>
+                            ` : ''}
+                        </div>
+                    </td>
+                </tr>`;
+            }).join('');
+        }
+
+        function changePage(delta) {
+            currentPage += delta;
+            renderTable();
+        }
+
+        // ============== STATUS UPDATE ==============
+        async function updateStatus(regId, newStatus) {
+            const updateData = { status: newStatus };
+            if (newStatus === 'confirmed') updateData.confirmed_at = new Date().toISOString();
+
+            const { error } = await supabaseClient
+                .from('registrations')
+                .update(updateData)
+                .eq('id', regId);
+
+            if (error) { showToast('Erro ao atualizar status.', 'error'); return; }
+
+            showToast(newStatus === 'confirmed' ? 'Inscrição confirmada!' : newStatus === 'rejected' ? 'Inscrição rejeitada.' : 'Status atualizado.',
+                newStatus === 'confirmed' ? 'success' : newStatus === 'rejected' ? 'warning' : 'info');
+
+            await loadAllData();
+            renderKPIs();
+            filterTable();
+        }
+
+        // ============== PROOF MODAL ==============
+        function showProofs(regId) {
+            const reg = allData.find(r => r.id === regId);
+            if (!reg || !reg.payment_proofs?.length) return;
+
+            const content = document.getElementById('proof-modal-content');
+            content.innerHTML = reg.payment_proofs.map(proof => {
+                const isImage = proof.file_type?.startsWith('image/');
+                return `
+                    <div class="bg-white/5 rounded-2xl border border-white/10 p-4">
+                        <div class="flex items-center justify-between mb-3">
+                            <p class="text-white text-sm font-medium">${proof.file_name || 'Comprovante'}</p>
+                            <p class="text-slate-500 text-xs">${formatDateBR(proof.uploaded_at)}</p>
+                        </div>
+                        ${isImage ? `<img src="${proof.file_url}" class="w-full rounded-xl border border-white/10" alt="Comprovante" />`
+                        : `<a href="${proof.file_url}" target="_blank" class="flex items-center gap-3 bg-white/5 p-4 rounded-xl text-primary hover:underline">
+                                        <span class="material-symbols-outlined text-3xl">picture_as_pdf</span>
+                                        <span class="text-sm font-medium">Abrir PDF</span>
+                                     </a>`}
+                    </div>
+                `;
+            }).join('');
+
+            document.getElementById('proof-modal').classList.remove('hidden');
+        }
+
+        function closeProofModal() {
+            document.getElementById('proof-modal').classList.add('hidden');
+        }
+
+        // ============== EXPORT CSV ==============
+        function exportCSV() {
+            if (filteredData.length === 0) { showToast('Nenhum dado para exportar.', 'warning'); return; }
+
+            const headers = ['Nº', 'Nome', 'Email', 'CPF', 'Telefone', 'Nascimento', 'Idade', 'Cidade', 'UF', 'Camiseta', 'Modalidade', 'Valor', 'Status', 'Data Inscrição', 'Data Confirmação'];
+            const rows = filteredData.map(r => {
+                const p = r.profiles;
+                return [
+                    r.registration_number,
+                    p.full_name,
+                    p.email,
+                    p.cpf,
+                    p.phone,
+                    p.birth_date,
+                    calculateAge(p.birth_date),
+                    p.city,
+                    p.state,
+                    p.shirt_size,
+                    r.modality,
+                    r.amount,
+                    getStatusInfo(r.status).label,
+                    formatDateBR(r.created_at),
+                    r.confirmed_at ? formatDateBR(r.confirmed_at) : ''
+                ];
+            });
+
+            const csvContent = [headers, ...rows].map(row => row.map(cell => `"${String(cell || '').replace(/"/g, '""')}"`).join(',')).join('\n');
+            const BOM = '\uFEFF';
+            const blob = new Blob([BOM + csvContent], { type: 'text/csv;charset=utf-8;' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `inscritos-nightrun-${new Date().toISOString().slice(0, 10)}.csv`;
+            a.click();
+            showToast('CSV exportado com sucesso!', 'success');
+        }
+    </script>
+</body>
+
+</html>

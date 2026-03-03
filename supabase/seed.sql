@@ -1,0 +1,32 @@
+-- =============================================
+-- SEED DATA — Night Run Tapejara
+-- =============================================
+-- Este arquivo contém dados iniciais opcionais.
+-- Execute após rodar as migrações.
+-- =============================================
+
+-- NOTA: O admin precisa ser criado manualmente:
+-- 1. Cadastre-se via cadastro.html com email/senha
+-- 2. Confirme o email
+-- 3. Execute o comando abaixo trocando SEU_EMAIL:
+
+-- UPDATE public.profiles SET role = 'admin' WHERE email = 'SEU_EMAIL_AQUI';
+
+-- =============================================
+-- CONFIGURAÇÃO DO EVENTO
+-- =============================================
+-- Evento: 2ª Night Run Tapejara
+-- Data: 04/04/2026 às 19h (22:00 UTC)
+-- Local: Pórtico de Tapejara, Tapejara - PR
+-- Coordenadas: -23.735855, -52.883880
+-- Distância: 5km
+-- Valor inscrição: R$ 60,00
+-- Tamanhos camiseta: PP, P, M, G, GG, EG
+--
+-- Status possíveis de inscrição:
+--   pending_payment    → Pagamento pendente (padrão ao se cadastrar)
+--   awaiting_approval  → Comprovante enviado, aguardando aprovação do admin
+--   confirmed          → Pagamento aprovado, inscrição confirmada
+--   rejected           → Pagamento rejeitado pelo admin
+--   cancelled          → Inscrição cancelada
+-- =============================================

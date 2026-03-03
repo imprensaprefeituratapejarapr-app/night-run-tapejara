@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html class="dark" lang="pt-br">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Login — 2ª Night Run Tapejara</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+    <style type="text/tailwindcss">
+        @layer base {
+            body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+        }
+        :root {
+            --primary: #12c172;
+            --bg-top: #070c12;
+            --bg-bottom: #0b1c3a;
+        }
+        .neon-glow { text-shadow: 0 0 15px rgba(18,193,114,0.4), 0 0 30px rgba(18,193,114,0.2); }
+        .btn-neon-glow { box-shadow: 0 4px 20px rgba(18,193,114,0.25); }
+        .btn-neon-glow:hover { box-shadow: 0 8px 30px rgba(18,193,114,0.4); }
+        .starry-bg {
+            background: linear-gradient(to bottom, var(--bg-top), #070c12 40%, var(--bg-bottom));
+            position: fixed; inset: 0; overflow: hidden; z-index: 0;
+        }
+        .starry-bg::before {
+            content: ""; position: absolute; inset: 0; background-repeat: repeat; pointer-events: none;
+            background-image: 
+                radial-gradient(1.5px 1.5px at 20% 30%, rgba(255,255,255,0.9), transparent),
+                radial-gradient(1px 1px at 10% 70%, rgba(255,255,255,0.6), transparent),
+                radial-gradient(2px 2px at 40% 40%, rgba(255,255,255,0.8), transparent),
+                radial-gradient(1px 1px at 80% 20%, rgba(255,255,255,0.5), transparent),
+                radial-gradient(1.5px 1.5px at 60% 80%, rgba(255,255,255,0.7), transparent);
+            background-size: 250px 250px;
+            animation: twinkle 4s ease-in-out infinite alternate;
+        }
+        @keyframes twinkle { 0% { opacity: 0.3; } 100% { opacity: 1; } }
+        .input-field {
+            @apply w-full bg-white/5 border border-white/10 text-white rounded-xl px-4 py-3.5 text-[15px] placeholder:text-slate-500 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/30 transition-all;
+        }
+    </style>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#12c172",
+                        "background-dark": "#070c12",
+                        "surface-dark": "#0b1c3a",
+                    },
+                },
+            },
+        }
+    </script>
+</head>
+
+<body class="bg-background-dark text-slate-100 antialiased selection:bg-primary/30 selection:text-white">
+    <div class="starry-bg"></div>
+
+    <div class="relative z-10 min-h-screen flex items-center justify-center px-4 py-12">
+        <div class="w-full max-w-md">
+            <!-- Logo -->
+            <div class="flex flex-col items-center mb-10">
+                <a href="home.html" class="flex items-center gap-3 mb-4 hover:opacity-80 transition-opacity">
+                    <span class="material-symbols-outlined text-primary text-3xl">sports_score</span>
+                    <h2 class="text-xl font-bold tracking-tight">2ªNIGHT<span class="text-primary">RUN</span></h2>
+                </a>
+                <h1 class="text-2xl md:text-3xl font-extrabold text-white tracking-tight">Área do Atleta</h1>
+                <p class="text-slate-400 text-sm mt-2">Acesse seu painel de inscrição</p>
+            </div>
+
+            <!-- Login Form -->
+            <div class="bg-[#0a1628]/80 backdrop-blur-xl rounded-3xl border border-white/5 p-8 shadow-2xl">
+                <form id="login-form" class="flex flex-col gap-5">
+                    <div>
+                        <label
+                            class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Email</label>
+                        <input type="email" id="email" required autocomplete="email" class="input-field"
+                            placeholder="seu@email.com" />
+                    </div>
+                    <div>
+                        <label
+                            class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Senha</label>
+                        <div class="relative">
+                            <input type="password" id="password" required autocomplete="current-password"
+                                class="input-field pr-12" placeholder="••••••••" />
+                            <button type="button" onclick="togglePassword()"
+                                class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 hover:text-white transition-colors">
+                                <span id="eye-icon" class="material-symbols-outlined text-xl">visibility_off</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="error-msg"
+                        class="hidden text-red-400 text-sm bg-red-500/10 border border-red-500/20 rounded-xl px-4 py-3">
+                    </div>
+                    <div id="success-msg"
+                        class="hidden text-emerald-400 text-sm bg-emerald-500/10 border border-emerald-500/20 rounded-xl px-4 py-3">
+                    </div>
+
+                    <button type="submit" id="login-btn"
+                        class="w-full py-4 bg-primary text-background-dark font-bold rounded-xl text-[15px] btn-neon-glow hover:brightness-110 transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed">
+                        <span id="login-text">Entrar</span>
+                        <span id="login-spinner"
+                            class="hidden animate-spin material-symbols-outlined text-lg">progress_activity</span>
+                    </button>
+                </form>
+
+                <div class="mt-6 flex flex-col gap-3 text-center">
+                    <a href="#" id="forgot-password-link"
+                        class="text-sm text-slate-400 hover:text-primary transition-colors">
+                        Esqueceu sua senha?
+                    </a>
+                    <div class="h-px bg-white/5"></div>
+                    <p class="text-sm text-slate-400">
+                        Ainda não tem conta?
+                        <a href="cadastro.html" class="text-primary font-semibold hover:underline">Inscreva-se</a>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Forgot Password Form (hidden by default) -->
+            <div id="forgot-form-container"
+                class="hidden mt-6 bg-[#0a1628]/80 backdrop-blur-xl rounded-3xl border border-white/5 p-8 shadow-2xl">
+                <h3 class="text-lg font-bold text-white mb-2">Recuperar Senha</h3>
+                <p class="text-sm text-slate-400 mb-5">Informe seu email e enviaremos um link para redefinir sua senha.
+                </p>
+                <form id="forgot-form" class="flex flex-col gap-4">
+                    <input type="email" id="forgot-email" required class="input-field" placeholder="seu@email.com" />
+                    <button type="submit"
+                        class="w-full py-3.5 bg-white/10 text-white font-bold rounded-xl text-[15px] hover:bg-white/15 transition-all">
+                        Enviar Link
+                    </button>
+                    <button type="button" onclick="hideForgotForm()"
+                        class="text-sm text-slate-400 hover:text-white transition-colors">
+                        ← Voltar ao login
+                    </button>
+                </form>
+            </div>
+
+            <p class="text-center text-slate-600 text-[11px] mt-8 uppercase tracking-widest">
+                © 2026 2ª Night Run Tapejara
+            </p>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase-config.js"></script>
+    <script>
+            // Check if already logged in
+            (async () => {
+                const session = await getSession();
+                if (session) {
+                    const profile = await getProfile(session.user.id);
+                    window.location.href = profile.role === 'admin' ? 'painel-admin.html' : 'painel-atleta.html';
+                }
+            })();
+
+        // Toggle password visibility
+        function togglePassword() {
+            const input = document.getElementById('password');
+            const icon = document.getElementById('eye-icon');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.textContent = 'visibility';
+            } else {
+                input.type = 'password';
+                icon.textContent = 'visibility_off';
+            }
+        }
+
+        // Login form
+        document.getElementById('login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const btn = document.getElementById('login-btn');
+            const errorMsg = document.getElementById('error-msg');
+            const successMsg = document.getElementById('success-msg');
+
+            errorMsg.classList.add('hidden');
+            successMsg.classList.add('hidden');
+            btn.disabled = true;
+            document.getElementById('login-text').textContent = 'Entrando...';
+            document.getElementById('login-spinner').classList.remove('hidden');
+
+            try {
+                const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+                if (error) throw error;
+
+                const profile = await getProfile(data.user.id);
+                window.location.href = profile.role === 'admin' ? 'painel-admin.html' : 'painel-atleta.html';
+            } catch (err) {
+                let msg = 'Erro ao fazer login. Tente novamente.';
+                if (err.message?.includes('Invalid login')) msg = 'Email ou senha incorretos.';
+                if (err.message?.includes('Email not confirmed')) msg = 'Confirme seu email antes de fazer login. Verifique sua caixa de entrada.';
+                errorMsg.textContent = msg;
+                errorMsg.classList.remove('hidden');
+            } finally {
+                btn.disabled = false;
+                document.getElementById('login-text').textContent = 'Entrar';
+                document.getElementById('login-spinner').classList.add('hidden');
+            }
+        });
+
+        // Forgot password
+        document.getElementById('forgot-password-link').addEventListener('click', (e) => {
+            e.preventDefault();
+            document.getElementById('forgot-form-container').classList.remove('hidden');
+        });
+
+        function hideForgotForm() {
+            document.getElementById('forgot-form-container').classList.add('hidden');
+        }
+
+        document.getElementById('forgot-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('forgot-email').value.trim();
+            const successMsg = document.getElementById('success-msg');
+
+            try {
+                const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
+                    redirectTo: window.location.origin + '/login.html'
+                });
+                if (error) throw error;
+                successMsg.textContent = 'Link de recuperação enviado! Verifique seu email.';
+                successMsg.classList.remove('hidden');
+                hideForgotForm();
+            } catch (err) {
+                showToast('Erro ao enviar email de recuperação.', 'error');
+            }
+        });
+    </script>
+</body>
+
+</html>

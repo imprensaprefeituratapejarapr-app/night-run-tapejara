@@ -20,8 +20,8 @@
         :root {
             --primary: #12c172;
             --primary-hover: #12c172;
-            --bg-top: #070c12;
-            --bg-bottom: #0b1c3a;
+            --bg-top: #03060a;
+            --bg-bottom: #050d1a;
         }
         .neon-glow {
             text-shadow: 0 0 15px rgba(18, 193, 114, 0.4), 0 0 30px rgba(18, 193, 114, 0.2);
@@ -33,7 +33,7 @@
             box-shadow: 0 8px 30px rgba(18, 193, 114, 0.4);
         }
         .starry-bg {
-            background: linear-gradient(to bottom, var(--bg-top), #070c12 40%, var(--bg-bottom));
+            background: linear-gradient(to bottom, var(--bg-top), #03060a 40%, var(--bg-bottom));
             position: absolute;
             inset: 0;
             overflow: hidden;
@@ -47,33 +47,33 @@
         }
         .starry-bg::before {
             background-image: 
-                radial-gradient(1.5px 1.5px at 20% 30%, rgba(255, 255, 255, 0.9), transparent),
-                radial-gradient(1px 1px at 10% 70%, rgba(255, 255, 255, 0.6), transparent),
-                radial-gradient(2px 2px at 40% 40%, rgba(255, 255, 255, 0.8), transparent),
-                radial-gradient(1px 1px at 80% 20%, rgba(255, 255, 255, 0.5), transparent),
-                radial-gradient(1.5px 1.5px at 60% 80%, rgba(255, 255, 255, 0.7), transparent),
-                radial-gradient(1px 1px at 70% 50%, rgba(255, 255, 255, 0.4), transparent),
-                radial-gradient(2px 2px at 90% 90%, rgba(255, 255, 255, 0.9), transparent),
-                radial-gradient(1px 1px at 30% 90%, rgba(255, 255, 255, 0.6), transparent),
-                radial-gradient(1.5px 1.5px at 50% 10%, rgba(255, 255, 255, 0.8), transparent);
+                radial-gradient(1px 1px at 20% 30%, rgba(255, 255, 255, 0.9), transparent),
+                radial-gradient(0.5px 0.5px at 10% 70%, rgba(255, 255, 255, 1.0), transparent),
+                radial-gradient(1px 1px at 40% 40%, rgba(255, 255, 255, 1.0), transparent),
+                radial-gradient(0.5px 0.5px at 80% 20%, rgba(255, 255, 255, 0.7), transparent),
+                radial-gradient(1px 1px at 60% 80%, rgba(255, 255, 255, 0.7), transparent),
+                radial-gradient(0.5px 0.5px at 70% 50%, rgba(255, 255, 255, 0.7), transparent),
+                radial-gradient(1.5px 1.5px at 90% 90%, rgba(255, 255, 255, 1.0), transparent),
+                radial-gradient(0.5px 0.5px at 30% 90%, rgba(255, 255, 255, 1.0), transparent),
+                radial-gradient(1px 1px at 50% 10%, rgba(255, 255, 255, 1.0), transparent);
             background-size: 250px 250px;
             animation: twinkle 4s ease-in-out infinite alternate;
         }
         .starry-bg::after {
             background-image: 
-                radial-gradient(1px 1px at 15% 15%, rgba(255, 255, 255, 0.5), transparent),
-                radial-gradient(2px 2px at 55% 45%, rgba(255, 255, 255, 0.4), transparent),
-                radial-gradient(1.5px 1.5px at 85% 75%, rgba(255, 255, 255, 0.6), transparent),
-                radial-gradient(1px 1px at 25% 65%, rgba(255, 255, 255, 0.4), transparent),
-                radial-gradient(1.5px 1.5px at 75% 35%, rgba(255, 255, 255, 0.7), transparent),
-                radial-gradient(1px 1px at 35% 85%, rgba(255, 255, 255, 0.5), transparent);
+                radial-gradient(0.5px 0.5px at 15% 15%, rgba(255, 255, 255, 0.7), transparent),
+                radial-gradient(1px 1px at 55% 45%, rgba(255, 255, 255, 1.0), transparent),
+                radial-gradient(1px 1px at 85% 75%, rgba(255, 255, 255, 0.7), transparent),
+                radial-gradient(0.5px 0.5px at 25% 65%, rgba(255, 255, 255, 0.7), transparent),
+                radial-gradient(1px 1px at 75% 35%, rgba(255, 255, 255, 1.0), transparent),
+                radial-gradient(0.5px 0.5px at 35% 85%, rgba(255, 255, 255, 0.7), transparent);
             background-size: 350px 350px;
             animation: twinkle 5s ease-in-out infinite alternate-reverse;
-            opacity: 0.8;
+            opacity: 0.6;
         }
         @keyframes twinkle {
-            0% { opacity: 0.3; }
-            100% { opacity: 1; }
+            0% { opacity: 0.2; }
+            100% { opacity: 0.8; }
         }
         .shooting-star {
             position: absolute;
@@ -94,7 +94,7 @@
             height: 4px;
             border-radius: 50%;
             background: #fff;
-            box-shadow: 0 0 10px 2px rgba(255, 255, 255, 0.8), 0 0 20px 4px var(--primary);
+            box-shadow: 0 0 10px 2px rgba(255, 255, 255, 1.0), 0 0 20px 4px var(--primary);
         }
         .shooting-star:nth-child(1) { top: 10%; left: 80%; animation-delay: 0s; }
         .shooting-star:nth-child(2) { top: 20%; left: 100%; animation-delay: 2.5s; }
@@ -184,8 +184,8 @@
             class="fixed top-0 w-full z-50 border-b border-white/5 bg-background-dark/60 backdrop-blur-xl px-6 md:px-20 py-4">
             <div class="max-w-7xl mx-auto flex items-center justify-between">
                 <div class="flex items-center gap-3">
-                    <span class="material-symbols-outlined text-primary text-3xl">sports_score</span>
-                    <h2 class="text-xl font-bold tracking-tight">2ªNIGHT<span class="text-primary">RUN</span></h2>
+                    <img src="https://agkvkcpaaaimwhhopfpl.supabase.co/storage/v1/object/public/Fotos/LOGO%20CORRIDA%20-%20PNG.png"
+                        alt="2ª Night Run Tapejara" class="h-10 sm:h-12 w-auto object-contain" />
                 </div>
                 <nav class="hidden lg:flex items-center gap-8">
                     <a class="text-[13px] font-medium text-slate-300 hover:text-white transition-colors"
@@ -288,34 +288,57 @@
                 class="bg-[#030509] py-24 px-6 border-t border-white/5 relative z-10 overflow-hidden">
                 <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
                     <div
-                        class="reveal-scale reveal-delay-1 flex flex-col gap-4 p-8 rounded-3xl bg-[#070b14] border border-white/5 group hover:border-primary/40 hover:shadow-[0_0_30px_rgba(18,193,114,0.1)] transition-all duration-500">
+                        class="reveal-scale reveal-delay-1 h-full relative flex flex-col items-center text-center gap-5 p-10 rounded-[32px] bg-gradient-to-b from-white/[0.03] to-transparent border border-white/10 group hover:border-primary/50 hover:bg-white/[0.05] hover:shadow-[0_8px_32px_rgba(18,193,114,0.15)] transition-all duration-500 overflow-hidden">
                         <div
-                            class="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mb-2 group-hover:bg-primary/20 transition-colors">
-                            <span class="material-symbols-outlined text-primary text-3xl">military_tech</span>
+                            class="absolute top-0 right-0 w-32 h-32 bg-primary/10 rounded-full blur-[50px] -mr-10 -mt-10 transition-opacity duration-500 group-hover:bg-primary/20">
                         </div>
-                        <h3 class="text-[22px] md:text-2xl font-bold text-white tracking-tight">Kit Premium</h3>
-                        <p class="text-slate-400 leading-relaxed text-[16px]">Camiseta técnica, medalha de finisher,
-                            número de peito e brindes exclusivos.</p>
+
+                        <div
+                            class="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center border border-primary/20 group-hover:scale-110 group-hover:bg-primary/20 transition-all duration-500 relative z-10 shadow-[0_0_15px_rgba(18,193,114,0.1)]">
+                            <span
+                                class="material-symbols-outlined text-primary text-3xl drop-shadow-[0_0_8px_rgba(18,193,114,0.5)]">redeem</span>
+                        </div>
+                        <div class="relative z-10">
+                            <h3 class="text-2xl font-bold text-white tracking-tight mb-3">Kit Premium</h3>
+                            <p class="text-slate-400 leading-relaxed text-[15px]">Camiseta oficial, número de peito,
+                                medalha de finisher, hidratação (Gatorade e água) e troféus para os primeiros
+                                classificados.</p>
+                        </div>
                     </div>
                     <div
-                        class="reveal-scale reveal-delay-2 flex flex-col gap-4 p-8 rounded-3xl bg-[#070b14] border border-white/5 group hover:border-primary/40 hover:shadow-[0_0_30px_rgba(18,193,114,0.1)] transition-all duration-500">
+                        class="reveal-scale reveal-delay-2 h-full relative flex flex-col items-center text-center gap-5 p-10 rounded-[32px] bg-gradient-to-b from-white/[0.03] to-transparent border border-white/10 group hover:border-primary/50 hover:bg-white/[0.05] hover:shadow-[0_8px_32px_rgba(18,193,114,0.15)] transition-all duration-500 overflow-hidden">
                         <div
-                            class="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mb-2 group-hover:bg-primary/20 transition-colors">
-                            <span class="material-symbols-outlined text-primary text-3xl">timer</span>
+                            class="absolute top-0 right-0 w-32 h-32 bg-primary/10 rounded-full blur-[50px] -mr-10 -mt-10 transition-opacity duration-500 group-hover:bg-primary/20">
                         </div>
-                        <h3 class="text-[22px] md:text-2xl font-bold text-white tracking-tight">Performance</h3>
-                        <p class="text-slate-400 leading-relaxed text-[16px]">Sistema de chip eletrônico de alta
-                            precisão com resultados em tempo real via sistema.</p>
+
+                        <div
+                            class="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center border border-primary/20 group-hover:scale-110 group-hover:bg-primary/20 transition-all duration-500 relative z-10 shadow-[0_0_15px_rgba(18,193,114,0.1)]">
+                            <span
+                                class="material-symbols-outlined text-primary text-3xl drop-shadow-[0_0_8px_rgba(18,193,114,0.5)]">timer</span>
+                        </div>
+                        <div class="relative z-10">
+                            <h3 class="text-2xl font-bold text-white tracking-tight mb-3">Performance</h3>
+                            <p class="text-slate-400 leading-relaxed text-[15px]">Sistema de chip eletrônico de alta
+                                precisão com resultados em tempo real via sistema.</p>
+                        </div>
                     </div>
                     <div
-                        class="reveal-scale reveal-delay-3 flex flex-col gap-4 p-8 rounded-3xl bg-[#070b14] border border-white/5 group hover:border-primary/40 hover:shadow-[0_0_30px_rgba(18,193,114,0.1)] transition-all duration-500">
+                        class="reveal-scale reveal-delay-3 h-full relative flex flex-col items-center text-center gap-5 p-10 rounded-[32px] bg-gradient-to-b from-white/[0.03] to-transparent border border-white/10 group hover:border-primary/50 hover:bg-white/[0.05] hover:shadow-[0_8px_32px_rgba(18,193,114,0.15)] transition-all duration-500 overflow-hidden">
                         <div
-                            class="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mb-2 group-hover:bg-primary/20 transition-colors">
-                            <span class="material-symbols-outlined text-primary text-3xl">nightlight</span>
+                            class="absolute top-0 right-0 w-32 h-32 bg-primary/10 rounded-full blur-[50px] -mr-10 -mt-10 transition-opacity duration-500 group-hover:bg-primary/20">
                         </div>
-                        <h3 class="text-[22px] md:text-2xl font-bold text-white tracking-tight">Experiência</h3>
-                        <p class="text-slate-400 leading-relaxed text-[16px]">Pontos de iluminação cênica, DJ no
-                            percurso e chegada épica em neon.</p>
+
+                        <div
+                            class="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center border border-primary/20 group-hover:scale-110 group-hover:bg-primary/20 transition-all duration-500 relative z-10 shadow-[0_0_15px_rgba(18,193,114,0.1)]">
+                            <span
+                                class="material-symbols-outlined text-primary text-3xl drop-shadow-[0_0_8px_rgba(18,193,114,0.5)]">dark_mode</span>
+                        </div>
+                        <div class="relative z-10">
+                            <h3 class="text-2xl font-bold text-white tracking-tight mb-3">A Experiência</h3>
+                            <p class="text-slate-400 leading-relaxed text-[15px]">Uma noite inesquecível de esporte e
+                                superação, percorrendo um trajeto especial pela cidade com segurança e a energia
+                                vibrante de uma Night Run.</p>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -415,11 +438,11 @@
                         altere o atributo "name='busca'" do input de texto abaixo para o correspondente (ex: "name='atleta'").
                     -->
                     <form action="https://www.feraesportes.com.br/index.php#evento" method="GET" target="_blank"
-                        class="w-full bg-transparent sm:bg-[#070b14] sm:p-2 sm:rounded-full sm:border sm:border-white/10 flex flex-col sm:flex-row gap-3 sm:gap-0 sm:shadow-2xl">
-                        <input type="text" name="busca" placeholder="Digite seu nome ou número de peito..."
-                            class="w-full bg-[#070b14] sm:bg-transparent border border-white/10 sm:border-none text-white focus:ring-0 px-6 py-4 rounded-full sm:rounded-none placeholder:text-slate-500 text-[15px] outline-none shadow-2xl sm:shadow-none">
+                        class="w-full bg-transparent sm:bg-[#070b14] sm:p-2 sm:rounded-full sm:border sm:border-white/10 flex flex-col sm:flex-row gap-3 sm:gap-0 sm:shadow-2xl transition-all duration-300 focus-within:border-primary/30">
+                        <input type="text" name="busca" placeholder="Digite seu nome ou número de peito..." required
+                            class="peer w-full bg-[#070b14] sm:bg-transparent border border-white/10 sm:border-none text-white focus:ring-0 px-6 py-4 rounded-full sm:rounded-none placeholder:text-slate-500 text-[15px] outline-none shadow-2xl sm:shadow-none">
                         <button type="submit"
-                            class="w-full sm:w-auto bg-primary text-background-dark font-bold px-8 py-4 sm:py-0 rounded-full flex items-center justify-center gap-2 hover:brightness-110 transition-all shrink-0">
+                            class="w-full sm:w-auto bg-white/5 text-slate-500 font-bold px-8 py-4 sm:py-0 rounded-full flex items-center justify-center gap-2 transition-all duration-300 shrink-0 peer-valid:bg-primary peer-valid:text-background-dark peer-valid:shadow-[0_0_20px_rgba(18,193,114,0.3)] hover:brightness-110">
                             Buscar Resultado
                             <span class="material-symbols-outlined text-lg">search</span>
                         </button>
@@ -447,62 +470,57 @@
                 </div>
             </section>
         </main>
-        <footer class="bg-[#030509] border-t border-white/5 py-16 px-6 relative z-10">
-            <div class="max-w-7xl mx-auto flex flex-col items-center gap-10">
-                <div class="flex items-center gap-3">
-                    <span class="material-symbols-outlined text-primary text-3xl">sports_score</span>
-                    <h2 class="text-xl font-bold tracking-tight">2ªNIGHT<span class="text-primary">RUN</span></h2>
+        <footer class="bg-[#030509]/80 backdrop-blur-xl border-t border-white/5 py-8 px-6 relative z-10">
+            <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+                <!-- Logo & Copyright -->
+                <div class="flex flex-col md:flex-row items-center gap-4 md:gap-6">
+                    <img src="https://agkvkcpaaaimwhhopfpl.supabase.co/storage/v1/object/public/Fotos/LOGO%20CORRIDA%20-%20PNG.png"
+                        alt="2ª Night Run Tapejara" class="h-10 w-auto object-contain" />
+                    <div class="hidden md:block w-px h-6 bg-white/10"></div>
+                    <p class="text-slate-500 text-xs font-medium tracking-wide text-center md:text-left">
+                        © 2026 2ª Night Run Tapejara
+                    </p>
                 </div>
-                <!-- 
-                  LINKS SOCIAIS E CONTATO (RODAPÉ)
-                  - Cada <a> representa um botão. 
-                  - Substitua a URL no atributo href="" para alterar os destinos.
-                  - Para o WhatsApp, coloque o número de telefone completo no modelo: href="https://wa.me/55XX999999999" (removendo "SEUNUMEROAQUI").
-                -->
-                <div class="flex gap-4">
-                    <!-- Instagram Prefeitura -->
-                    <a class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-primary/20 hover:text-primary transition-all text-slate-400"
+
+                <!-- Social Links -->
+                <div class="flex items-center gap-3">
+                    <a class="w-9 h-9 rounded-xl bg-white/5 flex items-center justify-center hover:bg-primary/20 hover:text-primary transition-all text-slate-400 group"
                         href="https://www.instagram.com/prefeituradetapejarapr/" target="_blank"
-                        rel="noopener noreferrer">
-                        <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24">
+                        rel="noopener noreferrer" title="Instagram">
+                        <svg class="w-4 h-4 fill-current group-hover:scale-110 transition-transform"
+                            viewBox="0 0 24 24">
                             <path
                                 d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8A3.6 3.6 0 0 0 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6A3.6 3.6 0 0 0 16.4 4H7.6m9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8 1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3z">
                             </path>
                         </svg>
                     </a>
-
-                    <!-- Facebook Prefeitura -->
-                    <a class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-primary/20 hover:text-primary transition-all text-slate-400"
+                    <a class="w-9 h-9 rounded-xl bg-white/5 flex items-center justify-center hover:bg-primary/20 hover:text-primary transition-all text-slate-400 group"
                         href="https://www.facebook.com/prefeituradetapejara?locale=pt_BR" target="_blank"
-                        rel="noopener noreferrer">
-                        <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24">
+                        rel="noopener noreferrer" title="Facebook">
+                        <svg class="w-4 h-4 fill-current group-hover:scale-110 transition-transform"
+                            viewBox="0 0 24 24">
                             <path
                                 d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z">
                             </path>
                         </svg>
                     </a>
-
-                    <!-- Site Prefeitura -->
-                    <a class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-primary/20 hover:text-primary transition-all text-slate-400"
+                    <a class="w-9 h-9 rounded-xl bg-white/5 flex items-center justify-center hover:bg-primary/20 hover:text-primary transition-all text-slate-400 group"
                         href="https://www.tapejara.pr.gov.br/" target="_blank" rel="noopener noreferrer"
                         title="Site da Prefeitura">
-                        <span class="material-symbols-outlined text-[20px]">language</span>
+                        <span
+                            class="material-symbols-outlined text-[18px] group-hover:scale-110 transition-transform">language</span>
                     </a>
-
-                    <!-- WhatsApp - Edite apenas o SEUNUMEROAQUI -->
-                    <a class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-[#25D366]/20 hover:text-[#25D366] transition-all text-slate-400"
+                    <a class="w-9 h-9 rounded-xl bg-white/5 flex items-center justify-center hover:bg-[#25D366]/20 hover:text-[#25D366] transition-all text-slate-400 group"
                         href="https://wa.me/SEUNUMEROAQUI" target="_blank" rel="noopener noreferrer"
                         title="Contato via WhatsApp">
-                        <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24">
+                        <svg class="w-4 h-4 fill-current group-hover:scale-110 transition-transform"
+                            viewBox="0 0 24 24">
                             <path
                                 d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z">
                             </path>
                         </svg>
                     </a>
                 </div>
-                <p class="text-slate-600 text-[11px] font-medium uppercase tracking-widest">
-                    © 2026 2ª Night Run Tapejara
-                </p>
             </div>
         </footer>
     </div>

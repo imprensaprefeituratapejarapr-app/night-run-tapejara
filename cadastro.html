@@ -16,30 +16,97 @@
         }
         :root {
             --primary: #12c172;
-            --bg-top: #070c12;
-            --bg-bottom: #0b1c3a;
+            --primary-hover: #12c172;
+            --bg-top: #03060a;
+            --bg-bottom: #050d1a;
         }
-        .neon-glow { text-shadow: 0 0 15px rgba(18,193,114,0.4), 0 0 30px rgba(18,193,114,0.2); }
-        .btn-neon-glow { box-shadow: 0 4px 20px rgba(18,193,114,0.25); }
-        .btn-neon-glow:hover { box-shadow: 0 8px 30px rgba(18,193,114,0.4); }
+        .neon-glow {
+            text-shadow: 0 0 15px rgba(18, 193, 114, 0.4), 0 0 30px rgba(18, 193, 114, 0.2);
+        }
+        .btn-neon-glow { box-shadow: 0 4px 20px rgba(18, 193, 114, 0.25); }
+        .btn-neon-glow:hover { box-shadow: 0 8px 30px rgba(18, 193, 114, 0.4); }
+        
+        form:invalid .btn-primary {
+            background: rgba(255, 255, 255, 0.05) !important;
+            color: #64748b !important;
+            box-shadow: none !important;
+        }
+
         .starry-bg {
-            background: linear-gradient(to bottom, var(--bg-top), #070c12 40%, var(--bg-bottom));
+            background: linear-gradient(to bottom, var(--bg-top), #03060a 40%, var(--bg-bottom));
             position: fixed; inset: 0; overflow: hidden; z-index: 0;
         }
+        .starry-bg::before, .starry-bg::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background-repeat: repeat;
+            pointer-events: none;
+        }
         .starry-bg::before {
-            content: ""; position: absolute; inset: 0; background-repeat: repeat; pointer-events: none;
             background-image: 
-                radial-gradient(1.5px 1.5px at 20% 30%, rgba(255,255,255,0.9), transparent),
-                radial-gradient(1px 1px at 10% 70%, rgba(255,255,255,0.6), transparent),
-                radial-gradient(2px 2px at 40% 40%, rgba(255,255,255,0.8), transparent),
-                radial-gradient(1px 1px at 80% 20%, rgba(255,255,255,0.5), transparent),
-                radial-gradient(1.5px 1.5px at 60% 80%, rgba(255,255,255,0.7), transparent);
+                radial-gradient(1px 1px at 20% 30%, rgba(255, 255, 255, 0.9), transparent),
+                radial-gradient(0.5px 0.5px at 10% 70%, rgba(255, 255, 255, 1.0), transparent),
+                radial-gradient(1px 1px at 40% 40%, rgba(255, 255, 255, 1.0), transparent),
+                radial-gradient(0.5px 0.5px at 80% 20%, rgba(255, 255, 255, 0.7), transparent),
+                radial-gradient(1px 1px at 60% 80%, rgba(255, 255, 255, 0.7), transparent),
+                radial-gradient(0.5px 0.5px at 70% 50%, rgba(255, 255, 255, 0.7), transparent),
+                radial-gradient(1.5px 1.5px at 90% 90%, rgba(255, 255, 255, 1.0), transparent),
+                radial-gradient(0.5px 0.5px at 30% 90%, rgba(255, 255, 255, 1.0), transparent),
+                radial-gradient(1px 1px at 50% 10%, rgba(255, 255, 255, 1.0), transparent);
             background-size: 250px 250px;
             animation: twinkle 4s ease-in-out infinite alternate;
         }
-        @keyframes twinkle { 0% { opacity: 0.3; } 100% { opacity: 1; } }
+        .starry-bg::after {
+            background-image: 
+                radial-gradient(0.5px 0.5px at 15% 15%, rgba(255, 255, 255, 0.7), transparent),
+                radial-gradient(1px 1px at 55% 45%, rgba(255, 255, 255, 1.0), transparent),
+                radial-gradient(1px 1px at 85% 75%, rgba(255, 255, 255, 0.7), transparent),
+                radial-gradient(0.5px 0.5px at 25% 65%, rgba(255, 255, 255, 0.7), transparent),
+                radial-gradient(1px 1px at 75% 35%, rgba(255, 255, 255, 1.0), transparent),
+                radial-gradient(0.5px 0.5px at 35% 85%, rgba(255, 255, 255, 0.7), transparent);
+            background-size: 350px 350px;
+            animation: twinkle 5s ease-in-out infinite alternate-reverse;
+            opacity: 0.6;
+        }
+        @keyframes twinkle {
+            0% { opacity: 0.2; }
+            100% { opacity: 0.8; }
+        }
+        .shooting-star {
+            position: absolute;
+            width: 150px;
+            height: 2px;
+            background: linear-gradient(to right, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0) 100%);
+            opacity: 0;
+            pointer-events: none;
+            animation: shooting 6s linear infinite;
+        }
+        .shooting-star::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background: #fff;
+            box-shadow: 0 0 10px 2px rgba(255, 255, 255, 1.0), 0 0 20px 4px var(--primary);
+        }
+        .shooting-star:nth-child(1) { top: 10%; left: 80%; animation-delay: 0s; }
+        .shooting-star:nth-child(2) { top: 20%; left: 100%; animation-delay: 2.5s; }
+        .shooting-star:nth-child(3) { top: -10%; left: 60%; animation-delay: 4s; }
+        .shooting-star:nth-child(4) { top: 30%; left: 120%; animation-delay: 1.5s; }
+        .shooting-star:nth-child(5) { top: 5%; left: 40%; animation-delay: 6s; }
+        @keyframes shooting {
+            0% { transform: translateX(0) translateY(0) rotate(-45deg) scaleX(0); opacity: 0; }
+            5% { transform: translateX(-50px) translateY(50px) rotate(-45deg) scaleX(1); opacity: 1; }
+            15% { transform: translateX(-600px) translateY(600px) rotate(-45deg) scaleX(1); opacity: 0; }
+            100% { transform: translateX(-600px) translateY(600px) rotate(-45deg) scaleX(0); opacity: 0; }
+        }
         .input-field {
-            @apply w-full bg-white/5 border border-white/10 text-white rounded-xl px-4 py-3.5 text-[15px] placeholder:text-slate-500 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/30 transition-all;
+            @apply w-full bg-white/5 border border-white/10 text-white rounded-full px-6 py-3 text-[15px] placeholder:text-slate-500 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/30 transition-all;
         }
         select.input-field { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2394a3b8' d='M6 8L1 3h10z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 1rem center; }
         select.input-field option { background: #0b1c3a; color: white; }
@@ -61,314 +128,333 @@
 </head>
 
 <body class="bg-background-dark text-slate-100 antialiased selection:bg-primary/30 selection:text-white">
-    <div class="starry-bg"></div>
+    <div class="fixed inset-0 pointer-events-none z-0 starry-bg">
+        <div class="shooting-star"></div>
+        <div class="shooting-star"></div>
+        <div class="shooting-star"></div>
+        <div class="shooting-star"></div>
+        <div class="shooting-star"></div>
+    </div>
 
-    <div class="relative z-10 min-h-screen flex items-center justify-center px-4 py-12">
-        <div class="w-full max-w-lg">
-            <!-- Logo -->
-            <div class="flex flex-col items-center mb-8">
-                <a href="index.html" class="flex items-center gap-3 mb-4 hover:opacity-80 transition-opacity">
-                    <span class="material-symbols-outlined text-primary text-3xl">sports_score</span>
-                    <h2 class="text-xl font-bold tracking-tight">2ªNIGHT<span class="text-primary">RUN</span></h2>
-                </a>
-                <h1 class="text-2xl md:text-3xl font-extrabold text-white tracking-tight">Inscrição</h1>
-                <p class="text-slate-400 text-sm mt-2">Preencha seus dados para se inscrever</p>
-            </div>
+    <div class="relative z-10 min-h-screen flex flex-col items-center justify-center px-4 py-12 w-full">
+        <!-- Botão Voltar -->
+        <a href="index.html"
+            class="absolute top-6 left-6 md:top-10 md:left-10 w-12 h-12 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-slate-400 hover:text-white hover:bg-white/10 transition-all backdrop-blur-md z-50">
+            <span class="material-symbols-outlined text-[20px]">arrow_back_ios_new</span>
+        </a>
 
-            <!-- Registration Form -->
-            <div class="bg-[#0a1628]/80 backdrop-blur-xl rounded-3xl border border-white/5 p-8 shadow-2xl">
-                <!-- Steps indicator -->
-                <div class="flex items-center justify-center gap-3 mb-8">
-                    <div id="step-1-dot"
-                        class="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-background-dark font-bold text-sm">
-                        1</div>
-                    <div class="w-12 h-px bg-white/10"></div>
-                    <div id="step-2-dot"
-                        class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-slate-400 font-bold text-sm">
-                        2</div>
+        <div class="flex items-center justify-center w-full mt-8 md:mt-0">
+            <div class="w-full max-w-lg">
+                <!-- Logo -->
+                <div class="flex flex-col items-center mb-8">
+                    <a href="index.html"
+                        class="flex flex-col items-center gap-3 mb-4 hover:opacity-80 transition-opacity">
+                        <img src="https://agkvkcpaaaimwhhopfpl.supabase.co/storage/v1/object/public/Fotos/LOGO%20CORRIDA%20-%20PNG.png"
+                            alt="2ª Night Run Tapejara" class="h-24 md:h-32 object-contain" />
+                    </a>
+                    <h1 class="text-2xl md:text-3xl font-extrabold text-white tracking-tight">Inscrição</h1>
+                    <p class="text-slate-400 text-sm mt-2">Preencha seus dados para se inscrever</p>
                 </div>
 
-                <!-- Step 1: Personal Data -->
-                <form id="step-1" class="flex flex-col gap-4">
-                    <div>
-                        <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Nome
-                            Completo *</label>
-                        <input type="text" id="full_name" required class="input-field"
-                            placeholder="Seu nome completo" />
+                <!-- Registration Form -->
+                <div
+                    class="bg-[#0a1628]/40 backdrop-blur-2xl rounded-[32px] border border-white/10 p-8 shadow-[0_8px_32px_rgba(0,0,0,0.4)]">
+                    <!-- Steps indicator -->
+                    <div class="flex items-center justify-center gap-3 mb-8">
+                        <div id="step-1-dot"
+                            class="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-background-dark font-bold text-sm">
+                            1</div>
+                        <div class="w-12 h-px bg-white/10"></div>
+                        <div id="step-2-dot"
+                            class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-slate-400 font-bold text-sm">
+                            2</div>
                     </div>
-                    <div>
-                        <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">CPF
-                            *</label>
-                        <input type="text" id="cpf" required maxlength="14" oninput="maskCPF(this)" class="input-field"
-                            placeholder="000.000.000-00" />
-                    </div>
-                    <div class="grid grid-cols-2 gap-4">
+
+                    <!-- Step 1: Personal Data -->
+                    <form id="step-1" class="flex flex-col gap-4">
                         <div>
-                            <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Data
-                                Nascimento *</label>
-                            <input type="date" id="birth_date" required class="input-field" />
+                            <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Nome
+                                Completo *</label>
+                            <input type="text" id="full_name" required class="input-field"
+                                placeholder="Seu nome completo" />
                         </div>
                         <div>
-                            <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Telefone
+                            <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">CPF
                                 *</label>
-                            <input type="text" id="phone" required maxlength="15" oninput="maskPhone(this)"
-                                class="input-field" placeholder="(00) 00000-0000" />
+                            <input type="text" id="cpf" required maxlength="14" oninput="maskCPF(this)"
+                                class="input-field" placeholder="000.000.000-00" />
                         </div>
-                    </div>
-                    <div class="grid grid-cols-2 gap-4">
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Data
+                                    Nascimento *</label>
+                                <input type="date" id="birth_date" required class="input-field" />
+                            </div>
+                            <div>
+                                <label
+                                    class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Telefone
+                                    *</label>
+                                <input type="text" id="phone" required maxlength="15" oninput="maskPhone(this)"
+                                    class="input-field" placeholder="(00) 00000-0000" />
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label
+                                    class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Cidade
+                                    *</label>
+                                <input type="text" id="city" required class="input-field" placeholder="Tapejara" />
+                            </div>
+                            <div>
+                                <label
+                                    class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Estado</label>
+                                <select id="state" class="input-field">
+                                    <option value="PR" selected>PR</option>
+                                    <option value="SC">SC</option>
+                                    <option value="SP">SP</option>
+                                    <option value="RS">RS</option>
+                                    <option value="MS">MS</option>
+                                    <option value="MT">MT</option>
+                                    <option value="GO">GO</option>
+                                    <option value="MG">MG</option>
+                                    <option value="RJ">RJ</option>
+                                    <option value="Outro">Outro</option>
+                                </select>
+                            </div>
+                        </div>
                         <div>
-                            <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Cidade
+                            <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Tamanho
+                                da
+                                Camiseta *</label>
+                            <div class="grid grid-cols-6 gap-2">
+                                <label class="cursor-pointer">
+                                    <input type="radio" name="shirt_size" value="PP" class="hidden peer" required />
+                                    <div
+                                        class="aspect-square flex items-center justify-center rounded-full border border-white/10 bg-white/5 text-slate-400 text-sm font-bold peer-checked:border-primary/50 peer-checked:bg-primary/10 peer-checked:text-primary transition-all">
+                                        PP</div>
+                                </label>
+                                <label class="cursor-pointer">
+                                    <input type="radio" name="shirt_size" value="P" class="hidden peer" />
+                                    <div
+                                        class="aspect-square flex items-center justify-center rounded-full border border-white/10 bg-white/5 text-slate-400 text-sm font-bold peer-checked:border-primary/50 peer-checked:bg-primary/10 peer-checked:text-primary transition-all">
+                                        P</div>
+                                </label>
+                                <label class="cursor-pointer">
+                                    <input type="radio" name="shirt_size" value="M" class="hidden peer" />
+                                    <div
+                                        class="aspect-square flex items-center justify-center rounded-full border border-white/10 bg-white/5 text-slate-400 text-sm font-bold peer-checked:border-primary/50 peer-checked:bg-primary/10 peer-checked:text-primary transition-all">
+                                        M</div>
+                                </label>
+                                <label class="cursor-pointer">
+                                    <input type="radio" name="shirt_size" value="G" class="hidden peer" />
+                                    <div
+                                        class="aspect-square flex items-center justify-center rounded-full border border-white/10 bg-white/5 text-slate-400 text-sm font-bold peer-checked:border-primary/50 peer-checked:bg-primary/10 peer-checked:text-primary transition-all">
+                                        G</div>
+                                </label>
+                                <label class="cursor-pointer">
+                                    <input type="radio" name="shirt_size" value="GG" class="hidden peer" />
+                                    <div
+                                        class="aspect-square flex items-center justify-center rounded-full border border-white/10 bg-white/5 text-slate-400 text-sm font-bold peer-checked:border-primary/50 peer-checked:bg-primary/10 peer-checked:text-primary transition-all">
+                                        GG</div>
+                                </label>
+                                <label class="cursor-pointer">
+                                    <input type="radio" name="shirt_size" value="EG" class="hidden peer" />
+                                    <div
+                                        class="aspect-square flex items-center justify-center rounded-full border border-white/10 bg-white/5 text-slate-400 text-sm font-bold peer-checked:border-primary/50 peer-checked:bg-primary/10 peer-checked:text-primary transition-all">
+                                        EG</div>
+                                </label>
+                            </div>
+                        </div>
+                        <button type="submit"
+                            class="w-full py-3.5 btn-primary bg-primary text-background-dark font-bold rounded-full text-[15px] btn-neon-glow hover:brightness-110 transition-all flex items-center justify-center gap-2 mt-2">
+                            Próximo
+                            <span class="material-symbols-outlined text-lg">arrow_forward</span>
+                        </button>
+                    </form>
+
+                    <!-- Step 2: Account / Credentials -->
+                    <form id="step-2" class="hidden flex flex-col gap-4">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Email
                                 *</label>
-                            <input type="text" id="city" required class="input-field" placeholder="Tapejara" />
+                            <input type="email" id="email" required autocomplete="email" class="input-field"
+                                placeholder="seu@email.com" />
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Senha
+                                *</label>
+                            <input type="password" id="password" required minlength="6" class="input-field"
+                                placeholder="Mínimo 6 caracteres" />
                         </div>
                         <div>
                             <label
-                                class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Estado</label>
-                            <select id="state" class="input-field">
-                                <option value="PR" selected>PR</option>
-                                <option value="SC">SC</option>
-                                <option value="SP">SP</option>
-                                <option value="RS">RS</option>
-                                <option value="MS">MS</option>
-                                <option value="MT">MT</option>
-                                <option value="GO">GO</option>
-                                <option value="MG">MG</option>
-                                <option value="RJ">RJ</option>
-                                <option value="Outro">Outro</option>
-                            </select>
+                                class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Confirmar
+                                Senha *</label>
+                            <input type="password" id="confirm_password" required minlength="6" class="input-field"
+                                placeholder="Repita a senha" />
                         </div>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Tamanho da
-                            Camiseta *</label>
-                        <div class="grid grid-cols-6 gap-2">
-                            <label class="cursor-pointer">
-                                <input type="radio" name="shirt_size" value="PP" class="hidden peer" required />
-                                <div
-                                    class="text-center py-3 rounded-xl border border-white/10 bg-white/5 text-slate-400 text-sm font-bold peer-checked:border-primary/50 peer-checked:bg-primary/10 peer-checked:text-primary transition-all">
-                                    PP</div>
-                            </label>
-                            <label class="cursor-pointer">
-                                <input type="radio" name="shirt_size" value="P" class="hidden peer" />
-                                <div
-                                    class="text-center py-3 rounded-xl border border-white/10 bg-white/5 text-slate-400 text-sm font-bold peer-checked:border-primary/50 peer-checked:bg-primary/10 peer-checked:text-primary transition-all">
-                                    P</div>
-                            </label>
-                            <label class="cursor-pointer">
-                                <input type="radio" name="shirt_size" value="M" class="hidden peer" />
-                                <div
-                                    class="text-center py-3 rounded-xl border border-white/10 bg-white/5 text-slate-400 text-sm font-bold peer-checked:border-primary/50 peer-checked:bg-primary/10 peer-checked:text-primary transition-all">
-                                    M</div>
-                            </label>
-                            <label class="cursor-pointer">
-                                <input type="radio" name="shirt_size" value="G" class="hidden peer" />
-                                <div
-                                    class="text-center py-3 rounded-xl border border-white/10 bg-white/5 text-slate-400 text-sm font-bold peer-checked:border-primary/50 peer-checked:bg-primary/10 peer-checked:text-primary transition-all">
-                                    G</div>
-                            </label>
-                            <label class="cursor-pointer">
-                                <input type="radio" name="shirt_size" value="GG" class="hidden peer" />
-                                <div
-                                    class="text-center py-3 rounded-xl border border-white/10 bg-white/5 text-slate-400 text-sm font-bold peer-checked:border-primary/50 peer-checked:bg-primary/10 peer-checked:text-primary transition-all">
-                                    GG</div>
-                            </label>
-                            <label class="cursor-pointer">
-                                <input type="radio" name="shirt_size" value="EG" class="hidden peer" />
-                                <div
-                                    class="text-center py-3 rounded-xl border border-white/10 bg-white/5 text-slate-400 text-sm font-bold peer-checked:border-primary/50 peer-checked:bg-primary/10 peer-checked:text-primary transition-all">
-                                    EG</div>
-                            </label>
+
+                        <!-- Resumo -->
+                        <div class="bg-white/5 rounded-2xl border border-white/10 p-5 mt-2">
+                            <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Resumo da
+                                Inscrição
+                            </h3>
+                            <div class="grid grid-cols-2 gap-2 text-sm">
+                                <span class="text-slate-500">Modalidade:</span>
+                                <span class="text-white font-medium">5km Night Run</span>
+                                <span class="text-slate-500">Valor:</span>
+                                <span class="text-primary font-bold">R$ 60,00</span>
+                            </div>
                         </div>
-                    </div>
-                    <button type="submit"
-                        class="w-full py-4 bg-primary text-background-dark font-bold rounded-xl text-[15px] btn-neon-glow hover:brightness-110 transition-all flex items-center justify-center gap-2 mt-2">
-                        Próximo
-                        <span class="material-symbols-outlined text-lg">arrow_forward</span>
-                    </button>
-                </form>
 
-                <!-- Step 2: Account / Credentials -->
-                <form id="step-2" class="hidden flex flex-col gap-4">
-                    <div>
-                        <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Email
-                            *</label>
-                        <input type="email" id="email" required autocomplete="email" class="input-field"
-                            placeholder="seu@email.com" />
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Senha
-                            *</label>
-                        <input type="password" id="password" required minlength="6" class="input-field"
-                            placeholder="Mínimo 6 caracteres" />
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Confirmar
-                            Senha *</label>
-                        <input type="password" id="confirm_password" required minlength="6" class="input-field"
-                            placeholder="Repita a senha" />
-                    </div>
-
-                    <!-- Resumo -->
-                    <div class="bg-white/5 rounded-2xl border border-white/10 p-5 mt-2">
-                        <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Resumo da Inscrição
-                        </h3>
-                        <div class="grid grid-cols-2 gap-2 text-sm">
-                            <span class="text-slate-500">Modalidade:</span>
-                            <span class="text-white font-medium">5km Night Run</span>
-                            <span class="text-slate-500">Valor:</span>
-                            <span class="text-primary font-bold">R$ 60,00</span>
+                        <div id="error-msg"
+                            class="hidden text-red-400 text-sm bg-red-500/10 border border-red-500/20 rounded-xl px-4 py-3">
                         </div>
-                    </div>
 
-                    <div id="error-msg"
-                        class="hidden text-red-400 text-sm bg-red-500/10 border border-red-500/20 rounded-xl px-4 py-3">
-                    </div>
+                        <div class="flex gap-3 mt-2">
+                            <button type="button" onclick="goToStep(1)"
+                                class="flex-1 py-3.5 border border-white/10 text-white font-bold rounded-full text-[15px] hover:bg-white/5 transition-all flex items-center justify-center gap-2">
+                                <span class="material-symbols-outlined text-lg">arrow_back</span>
+                                Voltar
+                            </button>
+                            <button type="submit" id="register-btn"
+                                class="flex-[2] py-3.5 btn-primary bg-primary text-background-dark font-bold rounded-full text-[15px] btn-neon-glow hover:brightness-110 transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed">
+                                <span id="register-text">Finalizar Inscrição</span>
+                                <span id="register-spinner"
+                                    class="hidden animate-spin material-symbols-outlined text-lg">progress_activity</span>
+                            </button>
+                        </div>
+                    </form>
 
-                    <div class="flex gap-3 mt-2">
-                        <button type="button" onclick="goToStep(1)"
-                            class="flex-1 py-4 border border-white/10 text-white font-bold rounded-xl text-[15px] hover:bg-white/5 transition-all flex items-center justify-center gap-2">
-                            <span class="material-symbols-outlined text-lg">arrow_back</span>
-                            Voltar
-                        </button>
-                        <button type="submit" id="register-btn"
-                            class="flex-[2] py-4 bg-primary text-background-dark font-bold rounded-xl text-[15px] btn-neon-glow hover:brightness-110 transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed">
-                            <span id="register-text">Finalizar Inscrição</span>
-                            <span id="register-spinner"
-                                class="hidden animate-spin material-symbols-outlined text-lg">progress_activity</span>
-                        </button>
+                    <!-- Success Message -->
+                    <div id="success-view" class="hidden flex flex-col items-center text-center gap-5 py-6">
+                        <div class="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center">
+                            <span class="material-symbols-outlined text-primary text-4xl">check_circle</span>
+                        </div>
+                        <h3 class="text-2xl font-bold text-white">Inscrição Realizada!</h3>
+                        <p class="text-slate-400 text-sm leading-relaxed max-w-sm">
+                            Enviamos um email de confirmação para <strong id="confirm-email"
+                                class="text-white"></strong>.
+                            Confirme seu email e depois faça login para acessar seu painel.
+                        </p>
+                        <a href="login.html"
+                            class="w-full py-3.5 bg-primary text-background-dark font-bold rounded-full text-[15px] btn-neon-glow hover:brightness-110 transition-all flex items-center justify-center gap-2 mt-2">
+                            Ir para o Login
+                            <span class="material-symbols-outlined text-lg">login</span>
+                        </a>
                     </div>
-                </form>
-
-                <!-- Success Message -->
-                <div id="success-view" class="hidden flex flex-col items-center text-center gap-5 py-6">
-                    <div class="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center">
-                        <span class="material-symbols-outlined text-primary text-4xl">check_circle</span>
-                    </div>
-                    <h3 class="text-2xl font-bold text-white">Inscrição Realizada!</h3>
-                    <p class="text-slate-400 text-sm leading-relaxed max-w-sm">
-                        Enviamos um email de confirmação para <strong id="confirm-email" class="text-white"></strong>.
-                        Confirme seu email e depois faça login para acessar seu painel.
-                    </p>
-                    <a href="login.html"
-                        class="w-full py-4 bg-primary text-background-dark font-bold rounded-xl text-[15px] btn-neon-glow hover:brightness-110 transition-all flex items-center justify-center gap-2 mt-2">
-                        Ir para o Login
-                        <span class="material-symbols-outlined text-lg">login</span>
-                    </a>
                 </div>
+
+                <!-- Form links below block -->
+                <p class="text-center text-slate-400 text-sm mt-6">
+                    Já tem conta?
+                    <a href="login.html" class="text-primary font-semibold hover:underline">Faça login</a>
+                </p>
             </div>
-
-            <p class="text-center text-slate-400 text-sm mt-6">
-                Já tem conta?
-                <a href="login.html" class="text-primary font-semibold hover:underline">Faça login</a>
-            </p>
-            <p class="text-center text-slate-600 text-[11px] mt-4 uppercase tracking-widest">
-                © 2026 2ª Night Run Tapejara
-            </p>
         </div>
-    </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="js/supabase-config.js"></script>
-    <script>
-            // Check already logged in
-            (async () => {
-                const session = await getSession();
-                if (session) window.location.href = 'painel-atleta.html';
-            })();
+        <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+        <script src="js/supabase-config.js"></script>
+        <script>
+                // Check already logged in
+                (async () => {
+                    const session = await getSession();
+                    if (session) window.location.href = 'painel-atleta.html';
+                })();
 
-        // Step navigation
-        function goToStep(step) {
-            document.getElementById('step-1').classList.toggle('hidden', step !== 1);
-            document.getElementById('step-2').classList.toggle('hidden', step !== 2);
-            document.getElementById('step-1-dot').className = step >= 1
-                ? 'w-10 h-10 rounded-full bg-primary flex items-center justify-center text-background-dark font-bold text-sm'
-                : 'w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-slate-400 font-bold text-sm';
-            document.getElementById('step-2-dot').className = step >= 2
-                ? 'w-10 h-10 rounded-full bg-primary flex items-center justify-center text-background-dark font-bold text-sm'
-                : 'w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-slate-400 font-bold text-sm';
-        }
-
-        // Step 1 validation
-        document.getElementById('step-1').addEventListener('submit', (e) => {
-            e.preventDefault();
-            const cpf = document.getElementById('cpf').value.replace(/\D/g, '');
-            if (cpf.length !== 11) {
-                showToast('CPF deve ter 11 dígitos.', 'error');
-                return;
-            }
-            goToStep(2);
-        });
-
-        // Step 2 submit
-        document.getElementById('step-2').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const password = document.getElementById('password').value;
-            const confirmPassword = document.getElementById('confirm_password').value;
-            const errorMsg = document.getElementById('error-msg');
-            const btn = document.getElementById('register-btn');
-
-            errorMsg.classList.add('hidden');
-
-            if (password !== confirmPassword) {
-                errorMsg.textContent = 'As senhas não coincidem.';
-                errorMsg.classList.remove('hidden');
-                return;
+            // Step navigation
+            function goToStep(step) {
+                document.getElementById('step-1').classList.toggle('hidden', step !== 1);
+                document.getElementById('step-2').classList.toggle('hidden', step !== 2);
+                document.getElementById('step-1-dot').className = step >= 1
+                    ? 'w-10 h-10 rounded-full bg-primary flex items-center justify-center text-background-dark font-bold text-sm'
+                    : 'w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-slate-400 font-bold text-sm';
+                document.getElementById('step-2-dot').className = step >= 2
+                    ? 'w-10 h-10 rounded-full bg-primary flex items-center justify-center text-background-dark font-bold text-sm'
+                    : 'w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-slate-400 font-bold text-sm';
             }
 
-            if (password.length < 6) {
-                errorMsg.textContent = 'A senha deve ter no mínimo 6 caracteres.';
-                errorMsg.classList.remove('hidden');
-                return;
-            }
+            // Step 1 validation
+            document.getElementById('step-1').addEventListener('submit', (e) => {
+                e.preventDefault();
+                const cpf = document.getElementById('cpf').value.replace(/\D/g, '');
+                if (cpf.length !== 11) {
+                    showToast('CPF deve ter 11 dígitos.', 'error');
+                    return;
+                }
+                goToStep(2);
+            });
 
-            btn.disabled = true;
-            document.getElementById('register-text').textContent = 'Criando conta...';
-            document.getElementById('register-spinner').classList.remove('hidden');
+            // Step 2 submit
+            document.getElementById('step-2').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const password = document.getElementById('password').value;
+                const confirmPassword = document.getElementById('confirm_password').value;
+                const errorMsg = document.getElementById('error-msg');
+                const btn = document.getElementById('register-btn');
 
-            const userData = {
-                full_name: document.getElementById('full_name').value.trim(),
-                cpf: document.getElementById('cpf').value.replace(/\D/g, ''),
-                birth_date: document.getElementById('birth_date').value,
-                phone: document.getElementById('phone').value.trim(),
-                city: document.getElementById('city').value.trim(),
-                state: document.getElementById('state').value,
-                shirt_size: document.querySelector('input[name="shirt_size"]:checked')?.value || 'M'
-            };
+                errorMsg.classList.add('hidden');
 
-            try {
-                const { data, error } = await supabaseClient.auth.signUp({
-                    email: document.getElementById('email').value.trim(),
-                    password: password,
-                    options: {
-                        data: userData,
-                        emailRedirectTo: window.location.origin + '/login.html'
-                    }
-                });
+                if (password !== confirmPassword) {
+                    errorMsg.textContent = 'As senhas não coincidem.';
+                    errorMsg.classList.remove('hidden');
+                    return;
+                }
 
-                if (error) throw error;
+                if (password.length < 6) {
+                    errorMsg.textContent = 'A senha deve ter no mínimo 6 caracteres.';
+                    errorMsg.classList.remove('hidden');
+                    return;
+                }
 
-                // Show success
-                document.getElementById('step-2').classList.add('hidden');
-                document.getElementById('success-view').classList.remove('hidden');
-                document.getElementById('confirm-email').textContent = document.getElementById('email').value.trim();
+                btn.disabled = true;
+                document.getElementById('register-text').textContent = 'Criando conta...';
+                document.getElementById('register-spinner').classList.remove('hidden');
 
-                // Update step dots to show completion
-                document.getElementById('step-1-dot').innerHTML = '<span class="material-symbols-outlined text-base">check</span>';
-                document.getElementById('step-2-dot').innerHTML = '<span class="material-symbols-outlined text-base">check</span>';
+                const userData = {
+                    full_name: document.getElementById('full_name').value.trim(),
+                    cpf: document.getElementById('cpf').value.replace(/\D/g, ''),
+                    birth_date: document.getElementById('birth_date').value,
+                    phone: document.getElementById('phone').value.trim(),
+                    city: document.getElementById('city').value.trim(),
+                    state: document.getElementById('state').value,
+                    shirt_size: document.querySelector('input[name="shirt_size"]:checked')?.value || 'M'
+                };
 
-            } catch (err) {
-                let msg = 'Erro ao criar conta. Tente novamente.';
-                if (err.message?.includes('already registered')) msg = 'Este email já está cadastrado. Faça login ou recupere sua senha.';
-                if (err.message?.includes('duplicate key') && err.message?.includes('cpf')) msg = 'Este CPF já está cadastrado.';
-                errorMsg.textContent = msg;
-                errorMsg.classList.remove('hidden');
-            } finally {
-                btn.disabled = false;
-                document.getElementById('register-text').textContent = 'Finalizar Inscrição';
-                document.getElementById('register-spinner').classList.add('hidden');
-            }
-        });
-    </script>
+                try {
+                    const { data, error } = await supabaseClient.auth.signUp({
+                        email: document.getElementById('email').value.trim(),
+                        password: password,
+                        options: {
+                            data: userData,
+                            emailRedirectTo: window.location.origin + '/login.html'
+                        }
+                    });
+
+                    if (error) throw error;
+
+                    // Show success
+                    document.getElementById('step-2').classList.add('hidden');
+                    document.getElementById('success-view').classList.remove('hidden');
+                    document.getElementById('confirm-email').textContent = document.getElementById('email').value.trim();
+
+                    // Update step dots to show completion
+                    document.getElementById('step-1-dot').innerHTML = '<span class="material-symbols-outlined text-base">check</span>';
+                    document.getElementById('step-2-dot').innerHTML = '<span class="material-symbols-outlined text-base">check</span>';
+
+                } catch (err) {
+                    let msg = 'Erro ao criar conta. Tente novamente.';
+                    if (err.message?.includes('already registered')) msg = 'Este email já está cadastrado. Faça login ou recupere sua senha.';
+                    if (err.message?.includes('duplicate key') && err.message?.includes('cpf')) msg = 'Este CPF já está cadastrado.';
+                    errorMsg.textContent = msg;
+                    errorMsg.classList.remove('hidden');
+                } finally {
+                    btn.disabled = false;
+                    document.getElementById('register-text').textContent = 'Finalizar Inscrição';
+                    document.getElementById('register-spinner').classList.add('hidden');
+                }
+            });
+        </script>
 </body>
 
 </html>

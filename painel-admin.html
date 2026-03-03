@@ -703,8 +703,7 @@
                 ];
             });
 
-            const csvContent = [headers, ...rows].map(row => row.map(cell => `"${String(cell || '').replace(/" / g, '""')
-                } "`).join(',')).join('\n');
+            const csvContent = [headers, ...rows].map(row => row.map(cell => '"' + String(cell || '').replace(/"/g, '""') + '"').join(',')).join('\n');
             const BOM = '\uFEFF';
             const blob = new Blob([BOM + csvContent], { type: 'text/csv;charset=utf-8;' });
             const a = document.createElement('a');

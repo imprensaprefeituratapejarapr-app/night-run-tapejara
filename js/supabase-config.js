@@ -2,7 +2,11 @@
 // SUPABASE CLIENT CONFIG
 // =============================================
 const SUPABASE_URL = 'https://agkvkcpaaaimwhhopfpl.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFna3ZrY3BhYWFpbXdoaG9wZnBsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI1NDUxOTIsImV4cCI6MjA4ODEyMTE5Mn0.pFx-f5M1-KXlK0DcTXNtqX-P60ynFHD3ITbr6ypxWlw';
+// Modern publishable key (safer than legacy anon JWT)
+const SUPABASE_ANON_KEY = 'sb_publishable_Rxtyo4F_kIvrgMt-bFJWEA_JSjRJntt';
+
+// Auto-detects base URL (works on localhost AND Vercel production)
+const SITE_URL = window.location.origin;
 
 // IMPORTANT: named supabaseClient to avoid conflict with window.supabase (CDN global)
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);

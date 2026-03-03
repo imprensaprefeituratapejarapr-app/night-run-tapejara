@@ -224,7 +224,7 @@
 
             try {
                 const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
-                    redirectTo: window.location.origin + '/login.html'
+                    redirectTo: `${SITE_URL}/login.html`
                 });
                 if (error) throw error;
                 successMsg.textContent = 'Link de recuperação enviado! Verifique seu email.';

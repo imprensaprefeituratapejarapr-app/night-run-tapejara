@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html class="dark" lang="pt-br">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>2ª Night Run Tapejara</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&amp;display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+    <!-- Leaflet CSS (Mapa Interativo do Percurso) -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style type="text/tailwindcss">
+        @layer base {
+            body {font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            }
+        }
+        :root {
+            --primary: #12c172;
+            --primary-hover: #12c172;
+            --bg-top: #070c12;
+            --bg-bottom: #0b1c3a;
+        }
+        .neon-glow {
+            text-shadow: 0 0 15px rgba(18, 193, 114, 0.4), 0 0 30px rgba(18, 193, 114, 0.2);
+        }
+        .btn-neon-glow {
+            box-shadow: 0 4px 20px rgba(18, 193, 114, 0.25);
+        }
+        .btn-neon-glow:hover {
+            box-shadow: 0 8px 30px rgba(18, 193, 114, 0.4);
+        }
+        .starry-bg {
+            background: linear-gradient(to bottom, var(--bg-top), #070c12 40%, var(--bg-bottom));
+            position: absolute;
+            inset: 0;
+            overflow: hidden;
+        }
+        .starry-bg::before, .starry-bg::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background-repeat: repeat;
+            pointer-events: none;
+        }
+        .starry-bg::before {
+            background-image: 
+                radial-gradient(1.5px 1.5px at 20% 30%, rgba(255, 255, 255, 0.9), transparent),
+                radial-gradient(1px 1px at 10% 70%, rgba(255, 255, 255, 0.6), transparent),
+                radial-gradient(2px 2px at 40% 40%, rgba(255, 255, 255, 0.8), transparent),
+                radial-gradient(1px 1px at 80% 20%, rgba(255, 255, 255, 0.5), transparent),
+                radial-gradient(1.5px 1.5px at 60% 80%, rgba(255, 255, 255, 0.7), transparent),
+                radial-gradient(1px 1px at 70% 50%, rgba(255, 255, 255, 0.4), transparent),
+                radial-gradient(2px 2px at 90% 90%, rgba(255, 255, 255, 0.9), transparent),
+                radial-gradient(1px 1px at 30% 90%, rgba(255, 255, 255, 0.6), transparent),
+                radial-gradient(1.5px 1.5px at 50% 10%, rgba(255, 255, 255, 0.8), transparent);
+            background-size: 250px 250px;
+            animation: twinkle 4s ease-in-out infinite alternate;
+        }
+        .starry-bg::after {
+            background-image: 
+                radial-gradient(1px 1px at 15% 15%, rgba(255, 255, 255, 0.5), transparent),
+                radial-gradient(2px 2px at 55% 45%, rgba(255, 255, 255, 0.4), transparent),
+                radial-gradient(1.5px 1.5px at 85% 75%, rgba(255, 255, 255, 0.6), transparent),
+                radial-gradient(1px 1px at 25% 65%, rgba(255, 255, 255, 0.4), transparent),
+                radial-gradient(1.5px 1.5px at 75% 35%, rgba(255, 255, 255, 0.7), transparent),
+                radial-gradient(1px 1px at 35% 85%, rgba(255, 255, 255, 0.5), transparent);
+            background-size: 350px 350px;
+            animation: twinkle 5s ease-in-out infinite alternate-reverse;
+            opacity: 0.8;
+        }
+        @keyframes twinkle {
+            0% { opacity: 0.3; }
+            100% { opacity: 1; }
+        }
+        .shooting-star {
+            position: absolute;
+            width: 150px;
+            height: 2px;
+            background: linear-gradient(to right, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0) 100%);
+            opacity: 0;
+            pointer-events: none;
+            animation: shooting 6s linear infinite;
+        }
+        .shooting-star::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background: #fff;
+            box-shadow: 0 0 10px 2px rgba(255, 255, 255, 0.8), 0 0 20px 4px var(--primary);
+        }
+        .shooting-star:nth-child(1) { top: 10%; left: 80%; animation-delay: 0s; }
+        .shooting-star:nth-child(2) { top: 20%; left: 100%; animation-delay: 2.5s; }
+        .shooting-star:nth-child(3) { top: -10%; left: 60%; animation-delay: 4s; }
+        .shooting-star:nth-child(4) { top: 30%; left: 120%; animation-delay: 1.5s; }
+        .shooting-star:nth-child(5) { top: 5%; left: 40%; animation-delay: 6s; }
+        @keyframes shooting {
+            0% { transform: translateX(0) translateY(0) rotate(-45deg) scaleX(0); opacity: 0; }
+            5% { transform: translateX(-50px) translateY(50px) rotate(-45deg) scaleX(1); opacity: 1; }
+            15% { transform: translateX(-600px) translateY(600px) rotate(-45deg) scaleX(1); opacity: 0; }
+            100% { transform: translateX(-600px) translateY(600px) rotate(-45deg) scaleX(0); opacity: 0; }
+        }
+        .reveal, .reveal-blur, .reveal-scale, .reveal-left, .reveal-right {
+            opacity: 0;
+            transition: all 1s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .reveal {
+            transform: translateY(40px);
+        }
+        .reveal-blur {
+            transform: translateY(30px);
+            filter: blur(10px);
+        }
+        .reveal-scale {
+            transform: translateY(30px) scale(0.95);
+        }
+        .reveal-left {
+            transform: translateX(-40px);
+        }
+        .reveal-right {
+            transform: translateX(40px);
+        }
+        .reveal.active, .reveal-left.active, .reveal-right.active {
+            opacity: 1;
+            transform: translate(0);
+        }
+        .reveal-blur.active {
+            opacity: 1;
+            transform: translateY(0);
+            filter: blur(0);
+        }
+        .reveal-scale.active {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+        .reveal-delay-1 { transition-delay: 0.1s; }
+        .reveal-delay-2 { transition-delay: 0.2s; }
+        .reveal-delay-3 { transition-delay: 0.3s; }
+        
+        html {
+            scroll-behavior: smooth;
+        }
+    </style>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#12c172",
+                        "background-dark": "#070c12",
+                        "surface-dark": "#0b1c3a",
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "0.75rem",
+                        "xl": "1rem",
+                        "2xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+</head>
+
+<body class="bg-background-dark text-slate-100 antialiased selection:bg-primary/30 selection:text-white">
+    <div class="relative min-h-screen flex flex-col">
+        <div class="fixed inset-0 pointer-events-none z-0 starry-bg">
+            <div class="shooting-star"></div>
+            <div class="shooting-star"></div>
+            <div class="shooting-star"></div>
+            <div class="shooting-star"></div>
+            <div class="shooting-star"></div>
+        </div>
+        <header
+            class="fixed top-0 w-full z-50 border-b border-white/5 bg-background-dark/60 backdrop-blur-xl px-6 md:px-20 py-4">
+            <div class="max-w-7xl mx-auto flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <span class="material-symbols-outlined text-primary text-3xl">sports_score</span>
+                    <h2 class="text-xl font-bold tracking-tight">2ªNIGHT<span class="text-primary">RUN</span></h2>
+                </div>
+                <nav class="hidden lg:flex items-center gap-8">
+                    <a class="text-[13px] font-medium text-slate-300 hover:text-white transition-colors"
+                        href="#inicio">Início</a>
+                    <a class="text-[13px] font-medium text-slate-300 hover:text-white transition-colors"
+                        href="#beneficios">Benefícios</a>
+                    <a class="text-[13px] font-medium text-slate-300 hover:text-white transition-colors"
+                        href="#percurso">Percurso</a>
+                    <a class="text-[13px] font-medium text-slate-300 hover:text-white transition-colors"
+                        href="#resultados">Resultados</a>
+                </nav>
+                <div class="flex items-center gap-4">
+                    <button
+                        class="hidden sm:flex px-5 py-2.5 rounded-full text-slate-300 text-[13px] font-semibold hover:bg-white/5 transition-all">
+                        Área do Atleta
+                    </button>
+                    <button
+                        class="hidden sm:flex px-6 py-2.5 bg-primary text-background-dark rounded-full text-[13px] font-bold btn-neon-glow hover:brightness-110 transition-all">
+                        Inscrever-se
+                    </button>
+                    <button id="mobile-menu-btn"
+                        class="sm:hidden flex items-center justify-center text-white focus:outline-none">
+                        <span class="material-symbols-outlined text-3xl">menu</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Menu Mobile Overlay -->
+            <div id="mobile-menu-overlay"
+                class="sm:hidden hidden absolute top-full left-0 w-full h-screen bg-[#000000]/60 backdrop-blur-sm opacity-0 transition-opacity duration-300">
+            </div>
+
+            <!-- Menu Mobile -->
+            <div id="mobile-menu"
+                class="sm:hidden hidden flex-col bg-[#070b14]/95 backdrop-blur-3xl absolute top-full left-0 w-full border-b border-white/10 p-6 gap-6 opacity-0 transition-all duration-300 transform -translate-y-4 shadow-2xl">
+                <a class="text-[17px] font-medium text-slate-300 hover:text-white mobile-link" href="#inicio">Início</a>
+                <a class="text-[17px] font-medium text-slate-300 hover:text-white mobile-link"
+                    href="#beneficios">Benefícios</a>
+                <a class="text-[17px] font-medium text-slate-300 hover:text-white mobile-link"
+                    href="#percurso">Percurso</a>
+                <a class="text-[17px] font-medium text-slate-300 hover:text-white mobile-link"
+                    href="#resultados">Resultados</a>
+                <div class="h-px bg-white/10 w-full my-2"></div>
+                <button
+                    class="w-full py-4 border border-white/10 rounded-full text-[16px] font-bold text-white mb-2 hover:bg-white/5 transition-colors">Área
+                    do Atleta</button>
+                <button
+                    class="w-full py-4 bg-primary text-background-dark rounded-full text-[16px] font-bold btn-neon-glow text-center">Inscrever-se</button>
+            </div>
+        </header>
+        <main class="flex-grow flex flex-col">
+            <section id="inicio" class="relative min-h-screen flex items-center justify-center pt-20">
+                <div class="absolute inset-0 z-0 opacity-20 pointer-events-none overflow-hidden">
+                    <div class="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-primary/20 rounded-full blur-[160px]">
+                    </div>
+                    <div
+                        class="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-blue-500/10 rounded-full blur-[160px]">
+                    </div>
+                </div>
+                <div class="relative z-10 max-w-5xl mx-auto px-6 text-center reveal-blur text-balance">
+                    <div class="flex justify-center mb-8">
+                        <img src="ASSET/LOGO%20CORRIDA%20-%20PNG.png" alt="2ª Night Run Tapejara"
+                            class="w-full max-w-[280px] sm:max-w-xl md:max-w-3xl h-auto" />
+                        <h1 class="sr-only">2ª Night Run Tapejara</h1>
+                    </div>
+                    <div
+                        class="flex flex-col md:flex-row items-center justify-center gap-6 md:gap-10 mb-14 text-slate-300">
+                        <div class="flex items-center gap-3">
+                            <span class="material-symbols-outlined text-primary/80">calendar_today</span>
+                            <span class="text-[16px] md:text-xl font-medium tracking-tight">04 de Abril • 19h</span>
+                        </div>
+                        <div class="hidden md:block w-px h-6 bg-white/10"></div>
+                        <div class="flex items-center gap-3">
+                            <span class="material-symbols-outlined text-primary/80">location_on</span>
+                            <span class="text-[16px] md:text-xl font-medium tracking-tight">Pórtico de Tapejara</span>
+                        </div>
+                        <div class="hidden md:block w-px h-6 bg-white/10"></div>
+                        <div class="flex items-center gap-3">
+                            <span class="material-symbols-outlined text-primary/80">bolt</span>
+                            <span class="text-[16px] md:text-xl font-medium tracking-tight text-primary">5km</span>
+                        </div>
+                    </div>
+                    <div class="flex flex-col sm:flex-row items-center justify-center gap-5">
+                        <button
+                            class="w-full sm:w-auto px-8 py-4 md:px-10 md:py-5 bg-primary text-background-dark text-[16px] md:text-lg font-bold rounded-full btn-neon-glow hover:scale-[1.02] active:scale-[0.98] transition-transform flex items-center justify-center gap-3">
+                            Inscrever-se agora
+                            <span class="material-symbols-outlined text-xl">arrow_forward</span>
+                        </button>
+                        <button
+                            class="w-full sm:w-auto px-8 py-4 md:px-10 md:py-5 border border-white/20 bg-white/5 text-white text-[16px] md:text-lg font-bold rounded-full hover:bg-white/10 transition-colors">
+                            Ver Regulamento
+                        </button>
+                    </div>
+                </div>
+                <div class="absolute bottom-12 left-1/2 -translate-x-1/2 opacity-30">
+                    <span class="material-symbols-outlined text-white text-3xl animate-bounce">expand_more</span>
+                </div>
+            </section>
+            <section id="beneficios"
+                class="bg-[#030509] py-24 px-6 border-t border-white/5 relative z-10 overflow-hidden">
+                <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div
+                        class="reveal-scale reveal-delay-1 flex flex-col gap-4 p-8 rounded-3xl bg-[#070b14] border border-white/5 group hover:border-primary/40 hover:shadow-[0_0_30px_rgba(18,193,114,0.1)] transition-all duration-500">
+                        <div
+                            class="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mb-2 group-hover:bg-primary/20 transition-colors">
+                            <span class="material-symbols-outlined text-primary text-3xl">military_tech</span>
+                        </div>
+                        <h3 class="text-[22px] md:text-2xl font-bold text-white tracking-tight">Kit Premium</h3>
+                        <p class="text-slate-400 leading-relaxed text-[16px]">Camiseta técnica, medalha de finisher,
+                            número de peito e brindes exclusivos.</p>
+                    </div>
+                    <div
+                        class="reveal-scale reveal-delay-2 flex flex-col gap-4 p-8 rounded-3xl bg-[#070b14] border border-white/5 group hover:border-primary/40 hover:shadow-[0_0_30px_rgba(18,193,114,0.1)] transition-all duration-500">
+                        <div
+                            class="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mb-2 group-hover:bg-primary/20 transition-colors">
+                            <span class="material-symbols-outlined text-primary text-3xl">timer</span>
+                        </div>
+                        <h3 class="text-[22px] md:text-2xl font-bold text-white tracking-tight">Performance</h3>
+                        <p class="text-slate-400 leading-relaxed text-[16px]">Sistema de chip eletrônico de alta
+                            precisão com resultados em tempo real via sistema.</p>
+                    </div>
+                    <div
+                        class="reveal-scale reveal-delay-3 flex flex-col gap-4 p-8 rounded-3xl bg-[#070b14] border border-white/5 group hover:border-primary/40 hover:shadow-[0_0_30px_rgba(18,193,114,0.1)] transition-all duration-500">
+                        <div
+                            class="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mb-2 group-hover:bg-primary/20 transition-colors">
+                            <span class="material-symbols-outlined text-primary text-3xl">nightlight</span>
+                        </div>
+                        <h3 class="text-[22px] md:text-2xl font-bold text-white tracking-tight">Experiência</h3>
+                        <p class="text-slate-400 leading-relaxed text-[16px]">Pontos de iluminação cênica, DJ no
+                            percurso e chegada épica em neon.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Seção do Percurso -->
+            <section id="percurso"
+                class="bg-[#070b14] py-24 px-6 border-t border-white/5 relative z-10 overflow-hidden">
+                <div class="max-w-7xl mx-auto flex flex-col items-center reveal-blur text-balance">
+                    <div
+                        class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-[11px] font-bold uppercase tracking-[0.1em] mb-6">
+                        Conheça o Trajeto
+                    </div>
+                    <h2
+                        class="text-[28px] md:text-5xl font-extrabold text-white tracking-tight text-center mb-16 neon-glow">
+                        O PERCURSO DA <span class="text-primary">NOITE</span>
+                    </h2>
+
+                    <div
+                        class="w-full max-w-5xl bg-[#030509] rounded-3xl border border-white/5 p-8 md:p-12 shadow-2xl relative overflow-hidden group reveal-scale reveal-delay-1">
+                        <div
+                            class="absolute -top-32 -right-32 w-64 h-64 bg-primary/10 rounded-full blur-[80px] pointer-events-none group-hover:bg-primary/20 transition-all duration-700">
+                        </div>
+
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center relative z-10">
+                            <div class="flex flex-col gap-8">
+                                <div>
+                                    <h3 class="text-3xl font-bold text-white mb-2">5 Quilômetros</h3>
+                                    <p class="text-slate-400 text-[15px] leading-relaxed">
+                                        Um trajeto rápido e totalmente iluminado pelas principais ruas de Tapejara.
+                                        Preparamos um percurso plano que é perfeito tanto para quem busca quebrar seu
+                                        recorde pessoal quanto para quem vai curtir a sua primeira Night Run.
+                                    </p>
+                                </div>
+
+                                <div class="flex flex-col gap-4">
+                                    <div
+                                        class="flex items-center gap-4 bg-white/5 p-4 rounded-2xl border border-white/5">
+                                        <div
+                                            class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary shrink-0">
+                                            <span class="material-symbols-outlined">flag</span>
+                                        </div>
+                                        <div>
+                                            <p class="text-xs text-slate-500 font-bold uppercase tracking-wider mb-0.5">
+                                                Largada</p>
+                                            <p class="text-white font-medium text-[15px]">Pórtico de Tapejara • 19h00
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div
+                                        class="flex items-center gap-4 bg-white/5 p-4 rounded-2xl border border-white/5">
+                                        <div
+                                            class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary shrink-0">
+                                            <span class="material-symbols-outlined">local_drink</span>
+                                        </div>
+                                        <div>
+                                            <p class="text-xs text-slate-500 font-bold uppercase tracking-wider mb-0.5">
+                                                Hidratação</p>
+                                            <p class="text-white font-medium text-[15px]">Postos nos KMs 2.5 e na
+                                                Chegada</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="w-full h-full min-h-[300px] rounded-2xl overflow-hidden relative">
+                                <div id="map" class="w-full h-full min-h-[300px]"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Seção de Resultados -->
+            <section id="resultados"
+                class="bg-[#030509] py-24 px-6 border-t border-white/5 relative z-10 overflow-hidden">
+                <div
+                    class="absolute top-0 right-1/4 w-[400px] h-[400px] bg-primary/10 rounded-full blur-[120px] pointer-events-none">
+                </div>
+                <div
+                    class="max-w-4xl mx-auto flex flex-col items-center text-center relative z-10 reveal-blur text-balance">
+                    <div
+                        class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-[11px] font-bold uppercase tracking-[0.1em] mb-6">
+                        Desempenho
+                    </div>
+                    <h2 class="text-[28px] md:text-5xl font-extrabold text-white tracking-tight mb-6 neon-glow">
+                        RESULTADOS <span class="text-primary">OFICIAIS</span>
+                    </h2>
+                    <p class="text-slate-400 text-[16px] md:text-lg mb-12 max-w-2xl leading-relaxed">
+                        Confira seu tempo oficial, pace médio e classificação geral logo após cruzar a linha de chegada.
+                    </p>
+
+                    <!-- 
+                      CONFIGURAÇÃO DO LINK DE RESULTADOS
+                      - Para alterar o site de destino da busca, mude a URL no atributo "action" abaixo.
+                      - O atributo "target='_blank'" faz com que a página abra em uma nova aba do navegador.
+                      - Se o sistema de cronometragem esperar que a busca tenha um nome específico na URL (ex: ?atleta=Luan), 
+                        altere o atributo "name='busca'" do input de texto abaixo para o correspondente (ex: "name='atleta'").
+                    -->
+                    <form action="https://www.feraesportes.com.br/index.php#evento" method="GET" target="_blank"
+                        class="w-full bg-transparent sm:bg-[#070b14] sm:p-2 sm:rounded-full sm:border sm:border-white/10 flex flex-col sm:flex-row gap-3 sm:gap-0 sm:shadow-2xl">
+                        <input type="text" name="busca" placeholder="Digite seu nome ou número de peito..."
+                            class="w-full bg-[#070b14] sm:bg-transparent border border-white/10 sm:border-none text-white focus:ring-0 px-6 py-4 rounded-full sm:rounded-none placeholder:text-slate-500 text-[15px] outline-none shadow-2xl sm:shadow-none">
+                        <button type="submit"
+                            class="w-full sm:w-auto bg-primary text-background-dark font-bold px-8 py-4 sm:py-0 rounded-full flex items-center justify-center gap-2 hover:brightness-110 transition-all shrink-0">
+                            Buscar Resultado
+                            <span class="material-symbols-outlined text-lg">search</span>
+                        </button>
+                    </form>
+                </div>
+            </section>
+
+            <!-- Seção CTA Final -->
+            <section class="bg-[#070b14] py-32 px-6 border-t border-white/5 relative z-10">
+                <div class="absolute inset-0 z-0 opacity-30 pointer-events-none overflow-hidden">
+                    <div
+                        class="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 w-[800px] h-[400px] bg-primary/20 rounded-full blur-[120px]">
+                    </div>
+                </div>
+                <div
+                    class="max-w-4xl mx-auto flex flex-col items-center text-center relative z-10 reveal-scale text-balance">
+                    <h2 class="text-4xl md:text-6xl font-extrabold text-white tracking-tight leading-tight mb-10">
+                        Garanta seu lugar <br />na <span class="text-primary neon-glow">linha de partida.</span>
+                    </h2>
+                    <button
+                        class="w-full sm:w-auto px-10 md:px-12 py-5 bg-primary text-background-dark text-[17px] md:text-xl font-bold rounded-full btn-neon-glow hover:scale-[1.02] active:scale-[0.98] transition-transform flex items-center justify-center gap-3">
+                        Garantir Inscrição
+                        <span class="material-symbols-outlined">how_to_reg</span>
+                    </button>
+                </div>
+            </section>
+        </main>
+        <footer class="bg-[#030509] border-t border-white/5 py-16 px-6 relative z-10">
+            <div class="max-w-7xl mx-auto flex flex-col items-center gap-10">
+                <div class="flex items-center gap-3">
+                    <span class="material-symbols-outlined text-primary text-3xl">sports_score</span>
+                    <h2 class="text-xl font-bold tracking-tight">2ªNIGHT<span class="text-primary">RUN</span></h2>
+                </div>
+                <!-- 
+                  LINKS SOCIAIS E CONTATO (RODAPÉ)
+                  - Cada <a> representa um botão. 
+                  - Substitua a URL no atributo href="" para alterar os destinos.
+                  - Para o WhatsApp, coloque o número de telefone completo no modelo: href="https://wa.me/55XX999999999" (removendo "SEUNUMEROAQUI").
+                -->
+                <div class="flex gap-4">
+                    <!-- Instagram Prefeitura -->
+                    <a class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-primary/20 hover:text-primary transition-all text-slate-400"
+                        href="https://www.instagram.com/prefeituradetapejarapr/" target="_blank"
+                        rel="noopener noreferrer">
+                        <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24">
+                            <path
+                                d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8A3.6 3.6 0 0 0 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6A3.6 3.6 0 0 0 16.4 4H7.6m9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8 1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3z">
+                            </path>
+                        </svg>
+                    </a>
+
+                    <!-- Facebook Prefeitura -->
+                    <a class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-primary/20 hover:text-primary transition-all text-slate-400"
+                        href="https://www.facebook.com/prefeituradetapejara?locale=pt_BR" target="_blank"
+                        rel="noopener noreferrer">
+                        <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24">
+                            <path
+                                d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z">
+                            </path>
+                        </svg>
+                    </a>
+
+                    <!-- Site Prefeitura -->
+                    <a class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-primary/20 hover:text-primary transition-all text-slate-400"
+                        href="https://www.tapejara.pr.gov.br/" target="_blank" rel="noopener noreferrer"
+                        title="Site da Prefeitura">
+                        <span class="material-symbols-outlined text-[20px]">language</span>
+                    </a>
+
+                    <!-- WhatsApp - Edite apenas o SEUNUMEROAQUI -->
+                    <a class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-[#25D366]/20 hover:text-[#25D366] transition-all text-slate-400"
+                        href="https://wa.me/SEUNUMEROAQUI" target="_blank" rel="noopener noreferrer"
+                        title="Contato via WhatsApp">
+                        <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24">
+                            <path
+                                d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z">
+                            </path>
+                        </svg>
+                    </a>
+                </div>
+                <p class="text-slate-600 text-[11px] font-medium uppercase tracking-widest">
+                    © 2026 2ª Night Run Tapejara
+                </p>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Leaflet JS + Inicialização do Mapa do Percurso -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        // ============================================================
+        // MAPA DO PERCURSO (Leaflet)
+        // Para alterar a rota: edite os arrays pontosIda e pontosVolta.
+        // Cada item é [latitude, longitude].
+        // ============================================================
+
+        // Pontos da ida (Pista Sul)
+        const pontosIda = [
+            [-23.735855, -52.883880], // Largada
+            [-23.734709, -52.874765],
+            [-23.733627, -52.872899],
+            [-23.733491, -52.871318],
+            [-23.735468593610147, -52.860550087117566] // Ponto de Retorno
+        ];
+
+        // Pontos da volta (Pista Norte — levemente deslocada)
+        const offset = 0.00018;
+        const pontosVolta = [
+            [-23.735468593610147 + offset, -52.860550087117566],
+            [-23.733491 + offset, -52.871318],
+            [-23.733627 + offset, -52.872899],
+            [-23.734709 + offset, -52.874765],
+            [-23.735855 + offset, -52.883880] // Chegada
+        ];
+
+        const percursoCompleto = [...pontosIda, ...pontosVolta];
+
+        // Inicializa o mapa
+        const map = L.map('map', { zoomControl: false });
+
+        // Tile escuro para combinar com o tema do site
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+        }).addTo(map);
+
+        // Desenha a polyline do percurso
+        const polyline = L.polyline(percursoCompleto, {
+            color: '#12c172',
+            weight: 5,
+            opacity: 0.9,
+            lineJoin: 'round'
+        }).addTo(map);
+
+        // Marcadores interativos nos pontos-chave
+        const infoPontos = [
+            { pos: pontosIda[0], info: '🚩 <b>Largada</b><br>Pórtico de Tapejara • 19h00' },
+            { pos: pontosIda[4], info: '🔄 <b>Curva de Retorno</b><br>Ponto de inversão de pista' },
+            { pos: pontosVolta[3], info: '🏁 <b>Reta Final</b><br>Pista Norte de volta à largada' }
+        ];
+
+        infoPontos.forEach(item => {
+            const marker = L.circleMarker(item.pos, {
+                radius: 7,
+                fillColor: '#12c172',
+                color: '#070b14',
+                weight: 2,
+                fillOpacity: 1
+            }).addTo(map);
+
+            marker.bindTooltip(item.info, {
+                direction: 'top',
+                permanent: false,
+                opacity: 1
+            });
+
+            marker.on('mouseover', function () { this.openTooltip(); });
+        });
+
+        // Enquadra o mapa automático no percurso
+        map.fitBounds(polyline.getBounds(), { padding: [20, 20] });
+    </script>
+    <script>
+        // Menu Mobile animado
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const mobileMenuOverlay = document.getElementById('mobile-menu-overlay');
+        const mobileLinks = document.querySelectorAll('.mobile-link');
+
+        function toggleMenu() {
+            if (mobileMenu.classList.contains('hidden')) {
+                mobileMenu.classList.remove('hidden');
+                mobileMenu.classList.add('flex');
+                mobileMenuOverlay.classList.remove('hidden');
+                setTimeout(() => {
+                    mobileMenu.classList.remove('opacity-0', '-translate-y-4');
+                    mobileMenu.classList.add('opacity-100', 'translate-y-0');
+                    mobileMenuOverlay.classList.remove('opacity-0');
+                    mobileMenuOverlay.classList.add('opacity-100');
+                    mobileMenuBtn.querySelector('span').textContent = 'close';
+                }, 10);
+            } else {
+                mobileMenu.classList.remove('opacity-100', 'translate-y-0');
+                mobileMenu.classList.add('opacity-0', '-translate-y-4');
+                mobileMenuOverlay.classList.remove('opacity-100');
+                mobileMenuOverlay.classList.add('opacity-0');
+                mobileMenuBtn.querySelector('span').textContent = 'menu';
+                setTimeout(() => {
+                    mobileMenu.classList.add('hidden');
+                    mobileMenu.classList.remove('flex');
+                    mobileMenuOverlay.classList.add('hidden');
+                }, 300);
+            }
+        }
+
+        mobileMenuBtn.addEventListener('click', toggleMenu);
+        mobileMenuOverlay.addEventListener('click', toggleMenu);
+        mobileLinks.forEach(link => link.addEventListener('click', toggleMenu));
+
+        // Scroll Animations (Intersection Observer)
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.15
+        };
+
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.reveal, .reveal-blur, .reveal-scale, .reveal-left, .reveal-right').forEach((el) => {
+            observer.observe(el);
+        });
+    </script>
+</body>
+
+</html>

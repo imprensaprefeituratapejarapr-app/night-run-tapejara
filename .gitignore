@@ -1,0 +1,27 @@
+# macOS
+.DS_Store
+*.swp
+
+# IDE
+.idea/
+.vscode/
+*.code-workspace
+
+# Dependencies
+node_modules/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Build
+dist/
+build/
+
+# Backups / Archives
+*.zip
+*.tar.gz
+
+# Gemini
+.gemini/

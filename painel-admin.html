@@ -162,7 +162,7 @@
             </div>
 
             <!-- KPIs -->
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
                 <div class="kpi-card">
                     <div class="flex items-center gap-3 mb-3">
                         <div class="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
@@ -198,6 +198,29 @@
                     </div>
                     <p id="kpi-revenue" class="text-3xl font-extrabold text-primary">R$ 0</p>
                     <p class="text-xs text-slate-500 font-bold uppercase tracking-wider mt-1">Arrecadado</p>
+                </div>
+                <div class="kpi-card">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="w-10 h-10 rounded-xl bg-purple-500/10 flex items-center justify-center">
+                            <span class="material-symbols-outlined text-purple-400">confirmation_number</span>
+                        </div>
+                    </div>
+                    <p id="kpi-remaining" class="text-3xl font-extrabold text-purple-400">400</p>
+                    <p class="text-xs text-slate-500 font-bold uppercase tracking-wider mt-1">Vagas Restantes</p>
+                </div>
+            </div>
+
+            <!-- Shirt Stock Grid -->
+            <div class="card">
+                <div class="flex items-center justify-between mb-5">
+                    <div>
+                        <h2 class="text-lg font-bold text-white">Grade de Camisetas</h2>
+                        <p class="text-xs text-slate-500 mt-1">Estoque em tempo real por tamanho</p>
+                    </div>
+                    <span class="material-symbols-outlined text-slate-600 text-2xl">checkroom</span>
+                </div>
+                <div id="stock-grid" class="grid grid-cols-3 md:grid-cols-6 gap-3">
+                    <!-- Populated by JS -->
                 </div>
             </div>
 
@@ -405,6 +428,7 @@
         let filteredData = [];
         let currentPage = 0;
         const PAGE_SIZE = 20;
+        let stockData = [];
 
         // ============== INIT ==============
         (async () => {
@@ -413,8 +437,9 @@
 
             document.getElementById('admin-name').textContent = result.profile.full_name;
 
-            await loadAllData();
+            await Promise.all([loadAllData(), loadStockData()]);
             renderKPIs();
+            renderStockGrid();
             filterTable();
 
             document.getElementById('loading').classList.add('hidden');
@@ -452,6 +477,41 @@
             animateCounter('kpi-confirmed', confirmed);
             animateCounter('kpi-pending', pending);
             document.getElementById('kpi-revenue').textContent = formatCurrency(revenue);
+
+            const remaining = MAX_REGISTRATIONS - total;
+            document.getElementById('kpi-remaining').textContent = Math.max(0, remaining);
+            document.getElementById('kpi-remaining').classList.toggle('!text-red-400', remaining <= 0);
+        }
+
+        // ============== STOCK DATA ==============
+        async function loadStockData() {
+            stockData = await getShirtAvailability();
+        }
+
+        function renderStockGrid() {
+            const grid = document.getElementById('stock-grid');
+            if (!stockData.length) { grid.innerHTML = '<p class="text-slate-500 text-sm col-span-6">Carregando...</p>'; return; }
+
+            grid.innerHTML = stockData.map(item => {
+                const percentage = Math.round((item.used / item.max_quantity) * 100);
+                const isFull = item.available <= 0;
+                const isLow = item.available > 0 && item.available <= 5;
+                const barColor = isFull ? 'bg-red-500' : isLow ? 'bg-yellow-500' : 'bg-primary';
+                const textColor = isFull ? 'text-red-400' : isLow ? 'text-yellow-400' : 'text-primary';
+
+                return `
+                    <div class="bg-white/5 rounded-2xl border border-white/10 p-4 text-center">
+                        <p class="text-lg font-extrabold text-white mb-1">${item.size}</p>
+                        <p class="text-2xl font-extrabold ${textColor}">${item.available}</p>
+                        <p class="text-[10px] text-slate-500 font-bold uppercase tracking-wider mb-2">Disponíveis</p>
+                        <div class="w-full bg-white/5 rounded-full h-1.5 mb-2">
+                            <div class="${barColor} h-1.5 rounded-full transition-all" style="width: ${percentage}%"></div>
+                        </div>
+                        <p class="text-[10px] text-slate-600">${item.used}/${item.max_quantity}</p>
+                        ${isFull ? '<span class="inline-block mt-1 px-2 py-0.5 rounded-full bg-red-500/10 border border-red-500/20 text-red-400 text-[9px] font-bold">ESGOTADO</span>' : ''}
+                    </div>
+                `;
+            }).join('');
         }
 
         function animateCounter(id, target) {

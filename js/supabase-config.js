@@ -11,6 +11,9 @@ const SITE_URL = window.location.origin;
 // IMPORTANT: named supabaseClient to avoid conflict with window.supabase (CDN global)
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+// Maximum total registrations allowed
+const MAX_REGISTRATIONS = 400;
+
 // =============================================
 // AUTH HELPERS
 // =============================================
@@ -43,6 +46,20 @@ async function getRegistration(userId) {
 async function logout() {
     await supabaseClient.auth.signOut();
     window.location.href = 'login.html';
+}
+
+// Shirt stock availability (calls RPC)
+async function getShirtAvailability() {
+    const { data, error } = await supabaseClient.rpc('get_shirt_availability');
+    if (error) { console.error('Shirt availability error:', error); return []; }
+    return data || [];
+}
+
+// Total active registration count (calls RPC)
+async function getRegistrationCount() {
+    const { data, error } = await supabaseClient.rpc('get_registration_count');
+    if (error) { console.error('Registration count error:', error); return 0; }
+    return data || 0;
 }
 
 // Auth guard: redirect to login if not authenticated

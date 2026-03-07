@@ -702,16 +702,34 @@
         }
 
         function promptDeleteRegistration(regId) {
+            // Find the registration to get user_id
+            const reg = allData.find(d => d.id === regId);
+            if (!reg) return;
+
             showConfirmModal({
                 icon: 'delete_forever',
                 iconColor: 'bg-red-500/15 text-red-400',
                 title: 'Excluir Inscrito',
-                message: 'Tem certeza que deseja excluir este inscrito definitivamente? Essa ação não pode ser desfeita.',
+                message: 'Tem certeza que deseja excluir este inscrito definitivamente? O usuário e todos os dados serão removidos do sistema. Essa ação não pode ser desfeita.',
                 btnText: 'Sim, Excluir',
                 btnColor: 'bg-red-500 text-white hover:bg-red-600',
                 onConfirm: async () => {
-                    const { error } = await supabaseClient.from('registrations').delete().eq('id', regId);
-                    if (error) { showToast('Erro ao excluir.', 'error'); return; }
+                    const userId = reg.user_id || reg.profiles?.id;
+                    if (!userId) {
+                        showToast('Erro: usuário não encontrado.', 'error');
+                        return;
+                    }
+
+                    const { error } = await supabaseClient.rpc('delete_user_completely', {
+                        target_user_id: userId
+                    });
+
+                    if (error) {
+                        console.error('Delete error:', error);
+                        showToast('Erro ao excluir inscrito: ' + error.message, 'error');
+                        return;
+                    }
+
                     showToast('Inscrito excluído com sucesso.', 'success');
                     closeDetailsModal();
                     await loadAllData();

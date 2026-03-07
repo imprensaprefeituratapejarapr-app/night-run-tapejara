@@ -165,6 +165,14 @@ function maskPhone(input) {
     input.value = v;
 }
 
+// Date mask (DD/MM/YYYY)
+function maskDate(input) {
+    let v = input.value.replace(/\D/g, '');
+    v = v.replace(/(\d{2})(\d)/, '$1/$2');
+    v = v.replace(/(\d{2})(\d)/, '$1/$2');
+    input.value = v.substring(0, 10);
+}
+
 // Toast notification
 function showToast(message, type = 'success') {
     const colors = {

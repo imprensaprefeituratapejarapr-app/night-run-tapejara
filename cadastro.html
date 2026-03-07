@@ -188,7 +188,8 @@
                             <div>
                                 <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Data
                                     Nascimento *</label>
-                                <input type="date" id="birth_date" required class="input-field" />
+                                <input type="text" id="birth_date" required class="input-field" placeholder="DD/MM/AAAA"
+                                    maxlength="10" oninput="maskDate(this)" />
                             </div>
                             <div>
                                 <label
@@ -209,16 +210,33 @@
                                 <label
                                     class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Estado</label>
                                 <select id="state" class="input-field">
-                                    <option value="PR" selected>PR</option>
-                                    <option value="SC">SC</option>
-                                    <option value="SP">SP</option>
-                                    <option value="RS">RS</option>
-                                    <option value="MS">MS</option>
-                                    <option value="MT">MT</option>
-                                    <option value="GO">GO</option>
-                                    <option value="MG">MG</option>
-                                    <option value="RJ">RJ</option>
-                                    <option value="Outro">Outro</option>
+                                    <option value="AC">Acre (AC)</option>
+                                    <option value="AL">Alagoas (AL)</option>
+                                    <option value="AP">Amapá (AP)</option>
+                                    <option value="AM">Amazonas (AM)</option>
+                                    <option value="BA">Bahia (BA)</option>
+                                    <option value="CE">Ceará (CE)</option>
+                                    <option value="DF">Distrito Federal (DF)</option>
+                                    <option value="ES">Espírito Santo (ES)</option>
+                                    <option value="GO">Goiás (GO)</option>
+                                    <option value="MA">Maranhão (MA)</option>
+                                    <option value="MT">Mato Grosso (MT)</option>
+                                    <option value="MS">Mato Grosso do Sul (MS)</option>
+                                    <option value="MG">Minas Gerais (MG)</option>
+                                    <option value="PA">Pará (PA)</option>
+                                    <option value="PB">Paraíba (PB)</option>
+                                    <option value="PR" selected>Paraná (PR)</option>
+                                    <option value="PE">Paraíba (PE)</option>
+                                    <option value="PI">Piauí (PI)</option>
+                                    <option value="RJ">Rio de Janeiro (RJ)</option>
+                                    <option value="RN">Rio Grande do Norte (RN)</option>
+                                    <option value="RS">Rio Grande do Sul (RS)</option>
+                                    <option value="RO">Rio Grande do Norte (RO)</option>
+                                    <option value="RR">Roraima (RO)</option>
+                                    <option value="SC">Santa Catarina (SC)</option>
+                                    <option value="SP">São Paulo (SP)</option>
+                                    <option value="SE">Sergipe (SE)</option>
+                                    <option value="TO">Tocantins (TO)</option>
                                 </select>
                             </div>
                         </div>
@@ -529,10 +547,20 @@
 
                 document.getElementById('register-text').textContent = 'Criando conta...';
 
+                // Parse DD/MM/YYYY to YYYY-MM-DD before sending to DB
+                let rawDate = document.getElementById('birth_date').value;
+                let formattedDate = rawDate;
+                if (rawDate.includes('/')) {
+                    const parts = rawDate.split('/');
+                    if (parts.length === 3) {
+                        formattedDate = `${parts[2]}-${parts[1]}-${parts[0]}`;
+                    }
+                }
+
                 const userData = {
                     full_name: document.getElementById('full_name').value.trim(),
                     cpf: document.getElementById('cpf').value.replace(/\D/g, ''),
-                    birth_date: document.getElementById('birth_date').value,
+                    birth_date: formattedDate,
                     phone: document.getElementById('phone').value.trim(),
                     city: document.getElementById('city').value.trim(),
                     state: document.getElementById('state').value,

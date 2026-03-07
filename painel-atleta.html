@@ -210,15 +210,38 @@
                                 <span class="material-symbols-outlined text-primary text-xl">payments</span>
                                 Pagamento Pendente
                             </h3>
-                            <a id="payment-link-btn" href="#" target="_blank"
-                                class="px-5 py-2.5 w-full sm:w-auto text-center bg-primary/10 text-primary hover:bg-primary/20 font-bold rounded-xl text-xs transition-all flex items-center justify-center gap-2 border border-primary/20">
-                                Link de Pagamento <span class="material-symbols-outlined text-[16px]">open_in_new</span>
-                            </a>
+                            <div id="lot-badge"
+                                class="px-3 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-bold">
+                            </div>
                         </div>
 
                         <div class="bg-background-dark/30 rounded-2xl p-4 sm:p-5 border border-white/5">
-                            <p class="text-xs text-slate-400 mb-4 font-medium">Após o pagamento, anexe o comprovante
-                                abaixo para envio.</p>
+                            <div class="flex items-center justify-between mb-4">
+                                <div>
+                                    <p class="text-xs text-slate-500 font-bold uppercase tracking-wider mb-1">Valor da
+                                        Inscrição</p>
+                                    <p id="lot-price" class="text-2xl font-extrabold text-primary">—</p>
+                                </div>
+                                <div class="text-right">
+                                    <p id="lot-name" class="text-xs text-slate-400 font-medium"></p>
+                                    <p id="lot-deadline" class="text-[10px] text-slate-600 mt-0.5"></p>
+                                </div>
+                            </div>
+
+                            <button id="mp-pay-btn" onclick="handlePayment()"
+                                class="w-full py-3.5 bg-[#009ee3] hover:bg-[#007eb5] text-white font-bold rounded-xl text-sm transition-all flex items-center justify-center gap-2 shadow-lg shadow-[#009ee3]/20">
+                                <span id="mp-pay-text">Pagar com Mercado Pago</span>
+                                <span id="mp-pay-spinner"
+                                    class="hidden animate-spin material-symbols-outlined text-lg">progress_activity</span>
+                            </button>
+                            <p class="text-[10px] text-slate-600 text-center mt-3">Você será redirecionado ao ambiente
+                                seguro do Mercado Pago</p>
+                        </div>
+
+                        <!-- Upload section (for manual proofs if needed) -->
+                        <div class="mt-5 pt-5 border-t border-white/5">
+                            <p class="text-xs text-slate-400 mb-4 font-medium">Ou, se já pagou por outro meio, anexe o
+                                comprovante:</p>
 
                             <div id="upload-zone" class="upload-zone flex flex-col items-center justify-center gap-2"
                                 onclick="document.getElementById('file-input').click()">
@@ -453,16 +476,76 @@
             // Registration details
             document.getElementById('reg-number').textContent = `#${String(currentRegistration.registration_number).padStart(4, '0')}`;
             document.getElementById('reg-modality').textContent = currentRegistration.modality || '5km';
-            document.getElementById('reg-amount').textContent = formatCurrency(currentRegistration.amount);
             document.getElementById('reg-date').textContent = formatDateBR(currentRegistration.created_at);
             document.getElementById('reg-shirt').textContent = currentProfile.shirt_size || '—';
+
+            // Dynamic lot-based pricing
+            const lot = getCurrentLot();
+            if (lot) {
+                document.getElementById('reg-amount').textContent = formatCurrency(lot.price);
+            } else {
+                document.getElementById('reg-amount').textContent = formatCurrency(currentRegistration.amount);
+            }
 
             // Show payment section if pending
             if (['pending_payment', 'rejected'].includes(currentRegistration.status)) {
                 document.getElementById('payment-section').classList.remove('hidden');
-                if (currentRegistration.payment_link) {
-                    document.getElementById('payment-link-btn').href = currentRegistration.payment_link;
+
+                // Lot info display
+                if (lot) {
+                    document.getElementById('lot-badge').textContent = lot.name;
+                    document.getElementById('lot-price').textContent = formatCurrency(lot.price);
+                    document.getElementById('lot-name').textContent = lot.name;
+                    const deadlineDate = lot.deadline.toLocaleDateString('pt-BR');
+                    document.getElementById('lot-deadline').textContent = `Válido até ${deadlineDate}`;
+                } else {
+                    document.getElementById('lot-price').textContent = 'Encerrado';
+                    document.getElementById('lot-badge').textContent = 'Encerrado';
+                    document.getElementById('mp-pay-btn').disabled = true;
+                    document.getElementById('mp-pay-btn').classList.add('opacity-50', 'cursor-not-allowed');
                 }
+            }
+
+            // Handle return from Mercado Pago (query params)
+            const params = new URLSearchParams(window.location.search);
+            const paymentStatus = params.get('payment');
+            if (paymentStatus === 'success') {
+                showToast('Pagamento realizado! Sua inscrição será confirmada em instantes.', 'success');
+                // Clean URL
+                window.history.replaceState({}, '', window.location.pathname);
+            } else if (paymentStatus === 'failure') {
+                showToast('Pagamento não concluído. Tente novamente.', 'warning');
+                window.history.replaceState({}, '', window.location.pathname);
+            } else if (paymentStatus === 'pending') {
+                showToast('Pagamento em processamento. Aguarde a confirmação.', 'info');
+                window.history.replaceState({}, '', window.location.pathname);
+            }
+        }
+
+        // ============== MERCADO PAGO PAYMENT ==============
+        async function handlePayment() {
+            const btn = document.getElementById('mp-pay-btn');
+            const text = document.getElementById('mp-pay-text');
+            const spinner = document.getElementById('mp-pay-spinner');
+
+            btn.disabled = true;
+            text.textContent = 'Gerando link seguro...';
+            spinner.classList.remove('hidden');
+
+            try {
+                const result = await createPaymentPreference();
+                if (result && result.init_point) {
+                    // Redirect to Mercado Pago
+                    window.location.href = result.init_point;
+                } else {
+                    throw new Error(result?.error || 'Erro ao gerar link de pagamento');
+                }
+            } catch (err) {
+                console.error('Payment error:', err);
+                showToast(err.message || 'Erro ao iniciar pagamento. Tente novamente.', 'error');
+                btn.disabled = false;
+                text.textContent = 'Pagar com Mercado Pago';
+                spinner.classList.add('hidden');
             }
         }
 

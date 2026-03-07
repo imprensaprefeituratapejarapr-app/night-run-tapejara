@@ -15,6 +15,35 @@ const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_
 const MAX_REGISTRATIONS = 400;
 
 // =============================================
+// LOT PRICING (Visual only — real price is calculated server-side)
+// =============================================
+const LOTS = [
+    { name: '1º Lote', price: 45.90, deadline: new Date('2026-03-21T02:59:59Z') }, // 20/03 23:59:59 BRT
+    { name: '2º Lote', price: 69.90, deadline: new Date('2026-04-02T02:59:59Z') }, // 01/04 23:59:59 BRT
+];
+
+function getCurrentLot() {
+    const now = new Date();
+    for (const lot of LOTS) {
+        if (now <= lot.deadline) {
+            return { name: lot.name, price: lot.price, deadline: lot.deadline };
+        }
+    }
+    return null; // Inscriptions closed
+}
+
+// =============================================
+// MERCADO PAGO — calls Edge Function securely
+// =============================================
+async function createPaymentPreference() {
+    const { data, error } = await supabaseClient.functions.invoke('create-preference', {
+        method: 'POST',
+    });
+    if (error) throw error;
+    return data; // { init_point, preference_id, lot, amount }
+}
+
+// =============================================
 // AUTH HELPERS
 // =============================================
 
